@@ -93,3 +93,46 @@ usable review or passing test evidence, so no worker artifacts were integrated.
 The 35-test passing result above comes from the primary agent's direct Docker run,
 not from that incomplete worker job. Phase 2 implementation and tests were
 committed and pushed as `bb6743d`.
+
+## Phase 3 — Flask REST API
+
+Implemented `server.py` with an application factory, per-app in-memory game
+storage, UUID4 game IDs, and a lock around shared reads/updates. Added the three
+required create/retrieve/guess routes. All state is returned through the engine's
+public serializer. Creation accepts only `difficulty`; guesses accept only
+`letter`. The server rejects attempts to supply answers or override state.
+
+Documented the API contract in `API.md`, including JSON request/error shapes,
+201/200 successes, 400/404/405/409/413/415 errors, normalization, request size,
+error precedence, no-store responses, Location headers, and storage limits.
+Default HTTP errors retain their headers while returning JSON. Static serving
+is disabled until browser implementation, preventing word/source-file exposure.
+Local `python server.py` binds to loopback on port 5000 with debug disabled.
+
+Added 21 API/live-HTTP unittest methods. Full Docker run: **56 tests passed,
+exit code 0**, using Python 3.14 and pinned Flask 3.1.3 dependencies. Tests include
+all difficulties, full wins/losses, validation failures without mutation, unknown
+IDs, app/game isolation, concurrent duplicate requests, answer omission/reveal,
+HTTP method headers, size limits, and inaccessible resource/source paths.
+
+The live HTTP test starts a real loopback server and uses urllib requests to play
+complete winning and losing games. A separate temporary container bound to an
+ephemeral Windows localhost port was exercised with PowerShell: creation returned
+201, active GET omitted `word`, and a complete losing game ended at zero lives
+with `word` present. The temporary container was removed. Dockerfile.test makes
+the dependency-equipped test image reproducible without new Python dependencies.
+
+The initially available older test image had Python 3.12 and lacked Flask; built
+a dedicated Python 3.14 image from pinned project requirements instead. No host
+Python test execution was substituted for Docker verification.
+
+Attempted a focused independent coding-worker review using an isolated supplied
+source snapshot because this repository is outside worker roots. It hit provider
+HTTP 429 and returned no review or verified tests. Inspected the failed result;
+none of its artifacts were applied. All passing evidence above is from the main
+suite and smoke check, not that worker.
+
+Limitations: browser UI and cloud hosting remain future phases. Games are not
+persistent, automatically expired, authenticated, or shared between processes.
+Use one worker for this in-memory design. Native Windows Python API execution
+has not been verified; the HTTP smoke client ran on Windows against Linux Docker.

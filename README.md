@@ -6,7 +6,7 @@ Repository: https://github.com/Jnuso/Hangman-Game
 
 ## Current status
 
-Phase 1 setup is complete. Phase 2 includes the game engine, word manager, three curated word lists, and 35 automated tests passing in a Python 3.14 Linux Docker container. The API, browser interface, and public deployment are not implemented. There is no runnable server yet.
+Phases 1–3 are complete: setup, game engine, word management, and the Flask REST API. All 56 automated tests pass in Python 3.14 Docker, including real loopback HTTP win/loss flows. A separate host-to-container HTTP game also completed successfully. The browser interface and public deployment are not implemented yet.
 
 See `TODO.md` for the accepted phased plan. Implement and verify one phase at a time.
 
@@ -63,11 +63,12 @@ The project uses Python's built-in `unittest`; it requires no additional test fr
 .\.venv\Scripts\python.exe -m unittest discover -s tests -p 'test_*.py' -v
 ```
 
-The suite currently contains **35 test methods**, with additional input combinations
+The suite currently contains **56 test methods**, with additional input combinations
 covered by `subTest`. All passed in a Python 3.14 Linux Docker container. See
 `TESTING.md` for the requirement coverage and Docker reproduction command. API
-tests will follow with the API implementation; no HTTP or browser behavior has
-been verified yet.
+tests cover request validation, status codes, game isolation, answer disclosure,
+concurrent duplicate guesses, and complete games. Browser behavior is not yet
+implemented or verified.
 
 ## Project layout
 
@@ -79,10 +80,13 @@ Hangman-Game/
 ├── README.md
 ├── DEVELOPMENT.md
 ├── TESTING.md
+├── API.md
+├── Dockerfile.test
 ├── requirements.txt
 ├── .gitignore
 ├── game.py
 ├── word_manager.py
+├── server.py
 ├── reference/
 │   ├── TODO.original.md
 │   └── cursor_transcript.md
@@ -91,7 +95,7 @@ Hangman-Game/
 └── tests/        # Tests added alongside implemented features
 ```
 
-`game.py` and `word_manager.py` implement the Phase 2 core; `server.py` will follow in Phase 3. Empty directories contain `.gitkeep` placeholders so Git preserves the structure.
+`game.py` and `word_manager.py` implement the core; `server.py` exposes it through Flask. Empty directories contain `.gitkeep` placeholders so Git preserves the structure.
 
 ## Game core
 
@@ -112,11 +116,25 @@ occurrences; only incorrect guesses consume one of six lives.
 through this method rather than returning the object's internal attributes.
 Neither module imports Flask. Phase 2 tests exercise these behaviors independently of a web server.
 
-## Planned API and deployment
+## Run the API locally
 
-The API will provide `POST /api/games`, `GET /api/games/{game_id}`, and `POST /api/games/{game_id}/guess` using JSON. Request validation and HTTP status codes will be documented when implemented.
+```powershell
+.\.venv\Scripts\python.exe server.py
+```
 
-Render deployment is planned for Phase 6. The production server configuration, local startup command, and deployed HTTPS URL will be documented after implementation and verification.
+The development API listens on `http://127.0.0.1:5000` with debug disabled.
+Use `POST /api/games`, `GET /api/games/{game_id}`, and
+`POST /api/games/{game_id}/guess`. See `API.md` for JSON examples, validation,
+status codes, and PowerShell requests. The root `/` returns JSON 404 because the
+browser interface is Phase 4 work.
+
+Games are in memory and disappear on restart. Each process has separate storage;
+a lock protects concurrent requests within one process. Use one production worker
+until shared storage is added. There is no automatic game expiration or login.
+
+## Planned deployment
+
+Render deployment is planned for Phase 6. Production configuration and the deployed HTTPS URL will be documented after implementation and verification. `Dockerfile.test` is for repeatable tests, not production hosting.
 
 ## Development workflow
 

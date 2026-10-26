@@ -61,16 +61,19 @@ Completion: the rules and word selection pass automated tests without running Fl
 
 ## Phase 3 — Flask server and REST API
 
-- [ ] Implement Flask application setup and in-memory storage with unique IDs and separate game states.
-- [ ] Implement `POST /api/games` accepting JSON difficulty and returning the new game's public state and ID.
-- [ ] Implement `GET /api/games/{game_id}` returning current public state.
-- [ ] Implement `POST /api/games/{game_id}/guess` accepting a JSON letter and returning updated public state.
-- [ ] Define and document consistent JSON response/error shapes and appropriate HTTP status codes.
-- [ ] Validate malformed JSON, missing/invalid fields, unknown game IDs, duplicate guesses, and guesses after completion.
-- [ ] Prevent clients from setting the answer or overriding server-owned state.
-- [ ] Keep word-list files and hidden answers out of active-game responses and static assets.
-- [ ] Test all three endpoints, complete win/loss flows, invalid requests, game isolation, and answer disclosure.
-- [ ] Verify this phase, record results, and commit/push.
+Verified: 56 tests pass in Docker, including 21 API/live-HTTP methods. A separate
+host-to-container game also completed. See `API.md` and `TESTING.md`.
+
+- [x] Implement Flask application setup and in-memory storage with unique IDs and separate game states.
+- [x] Implement `POST /api/games` accepting JSON difficulty and returning the new game's public state and ID.
+- [x] Implement `GET /api/games/{game_id}` returning current public state.
+- [x] Implement `POST /api/games/{game_id}/guess` accepting a JSON letter and returning updated public state.
+- [x] Define and document consistent JSON response/error shapes and appropriate HTTP status codes.
+- [x] Validate malformed JSON, missing/invalid fields, unknown game IDs, duplicate guesses, and guesses after completion.
+- [x] Prevent clients from setting the answer or overriding server-owned state.
+- [x] Keep word-list files and hidden answers out of active-game responses and static assets.
+- [x] Test all three endpoints, complete win/loss flows, invalid requests, game isolation, and answer disclosure.
+- [x] Verify this phase, record results, and commit/push.
 
 Completion: a complete game can be played through HTTP requests, with no browser required.
 

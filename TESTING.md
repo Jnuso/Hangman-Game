@@ -1,4 +1,4 @@
-# Phase 2 test cases and results
+# Test cases and results
 
 The suite uses standard-library `unittest`, known answers for engine scenarios,
 and temporary directories for file-loading scenarios. Tests use public behavior;
@@ -54,10 +54,50 @@ Observed result: **35 test methods passed** (18 engine methods and 17 word
 normalization/loading/resource methods), with additional cases exercised using
 `subTest`. No production-code changes were required by these tests.
 
-## Limits
+## Phase 2 verification limits
 
-This verifies the engine and word-management layer, not the future Flask API,
+The Phase 2 run verified the engine and word-management layer, not the Flask API,
 browser interface, deployment, concurrency, or statistically measured difficulty.
 The tests do not assume successive random selections differ and do not make
 probabilistic assertions about selection frequencies. A passing suite is evidence
 for the scenarios asserted, not proof that every possible defect is absent.
+
+## Phase 3 — Flask API and real HTTP
+
+Added `tests/test_api.py`: **20 Flask-client test methods and one live HTTP test
+method**. Together with the 35 core tests, **all 56 methods passed** in the
+Python 3.14 Docker image with pinned Flask 3.1.3 dependencies.
+
+Coverage includes all difficulties, unique IDs and Location headers, retrieval,
+correct/incorrect/uppercase guesses, malformed/non-object JSON, exact request
+fields, invalid types, unsupported media types, unknown IDs, 400/404/405/409/413/415
+errors, unchanged state after rejection, independent games/apps, two simultaneous
+duplicate guesses, terminal states, restart via new game, answer disclosure, and
+blocked word/source paths. A 405 test checks that the Allow header survives JSON
+error conversion.
+
+The live test starts a Werkzeug server on an ephemeral loopback port and uses
+standard-library HTTP requests to create, retrieve, guess, win, lose, and reject
+post-game guesses. Cleanup shuts down and closes the server. It does not use
+Flask's test client for those requests.
+
+Build and run the complete suite from the project root (PowerShell):
+
+```powershell
+docker build -f Dockerfile.test -t hangman-phase3-tests .
+docker run --rm --network none --mount "type=bind,source=$($PWD.Path),target=/app,readonly" hangman-phase3-tests
+```
+
+Building installs pinned dependencies and needs package-registry access. The test
+container itself has no external network access; loopback HTTP still works.
+
+A separate development-server smoke check published a temporary API container to
+an ephemeral **localhost-only** Windows port. PowerShell requests created a game
+(201), retrieved active state (200, answer absent), and guessed until a loss
+(zero lives, answer present). The container was removed after verification.
+
+The original Phase 2 command above remains suitable for the core tests only;
+the complete suite now needs the Flask dependencies. Browser, hosted deployment,
+and Windows-native Python API execution are not yet verified. The independent
+worker review hit a provider rate limit and returned no usable review or test
+evidence; no worker artifacts were integrated.

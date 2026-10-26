@@ -6,7 +6,12 @@ Repository: https://github.com/Jnuso/Hangman-Game
 
 ## Current status
 
-Phases 1–4 are complete: setup, game engine, word management, Flask API, and a playable browser interface. All 73 Python tests pass in Docker, alongside 43 browser walkthrough assertions and 22 browser edge-case scenarios in Chrome. The interface supports all difficulties, mouse/keyboard guesses, an SVG drawing, restart, and network-error recovery. Public deployment remains Phase 6 work.
+Phases 1–4 are complete. Phase 5 automated checks now pass: 77 Python tests,
+43 browser walkthrough assertions, 22 browser edge scenarios, and 9 browser
+integration scenarios. All 120 bundled words have controlled API win/loss coverage.
+The playable interface supports all difficulties, mouse/keyboard guesses, an SVG
+drawing, restart, and network recovery. Manual Phase 5 review remains pending;
+see `MANUAL_TESTING.md`. Public deployment remains Phase 6 work.
 
 See `TODO.md` for the accepted phased plan. Implement and verify one phase at a time.
 
@@ -63,13 +68,20 @@ The project uses Python's built-in `unittest`; it requires no additional test fr
 .\.venv\Scripts\python.exe -m unittest discover -s tests -p 'test_*.py' -v
 ```
 
-The suite currently contains **73 Python test methods**, with additional input combinations
+The suite currently contains **77 Python test methods**, with additional input combinations
 covered by `subTest`. All passed in a Python 3.14 Linux Docker container. See
 `TESTING.md` for the requirement coverage and Docker reproduction command. API
 tests cover request validation, status codes, game isolation, answer disclosure,
 concurrent duplicate guesses, complete games, and HTML/CSS/JavaScript delivery.
-There are also **43 browser walkthrough assertions and 22 browser edge-case scenarios**; see `tests/browser/README.md` for
+There are also **43 browser walkthrough assertions, 22 edge scenarios, and 9 integration scenarios**; see `tests/browser/README.md` for
 reproduction instructions and verification limits.
+
+`tests/test_integration.py` plays controlled wins and six-miss losses for every
+bundled word (240 game flows across two test methods), and verifies real server
+startup/restart in subprocesses. Those process tests use port 5000 and skip when
+it is already occupied, avoiding requests to an unrelated running local server.
+The full verified Docker run had no skips. Browser integration compares the page
+with 51 server response states, and checks two tabs, reload, and offline recovery.
 
 ## Project layout
 

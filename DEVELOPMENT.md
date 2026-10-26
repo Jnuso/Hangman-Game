@@ -226,3 +226,32 @@ Added three asset-delivery edge tests. Full Docker suite passed **73 Python test
 methods**, and Node syntax checks passed for the application and browser scripts.
 Updated README, testing instructions, and checklist with current evidence. No
 deployment work or Phase 5 completion was claimed in this follow-up.
+
+## Phase 5 — Automated tests before manual review
+
+The user asked for automated test cases before continuing hands-on testing. Added
+four Python integration methods covering 240 controlled bundled-word API game
+flows (120 wins and 120 six-miss losses), real `server.py` subprocess startup from
+another working directory, static/API delivery, and actual restart behavior.
+Selection is controlled for exhaustive word coverage; engine and HTTP validation
+remain real. Subprocess tests skip if local port 5000 is occupied to avoid
+modifying a separately running server. Full Docker result: **77 tests passed,
+exit code 0, no skips**.
+
+Added nine browser integration scenarios using the existing server-side fixtures.
+Compared UI fields, all alphabet button states, drawing parts, public response
+fields, and persisted GET state after gameplay actions at all three difficulties.
+Included separate tab isolation, documented refresh behavior, and actual browser
+Offline/Online recovery. Result: **9 scenarios passed with 51 response/display
+comparisons**, no failures or runtime errors. The original 43 browser checks and
+22 edge scenarios were rerun sequentially with this new suite.
+
+No application code changes were required. Added `MANUAL_TESTING.md` with all
+hands-on checks left unchecked, including the assignment-required Chrome Network
+inspection and request/response explanation. Updated Phase 5 progress to
+distinguish automated evidence from the user's pending manual review. Clean
+process startup in Docker does not claim fresh native dependency installation.
+
+The integration browser assertions collect a single DOM snapshot per response
+instead of issuing thousands of per-button browser round trips. The optimized
+script was reverified with the same nine passing scenarios and 51 comparisons.

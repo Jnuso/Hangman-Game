@@ -101,15 +101,20 @@ Completion: a player can complete and restart games through the browser, with th
 
 ## Phase 5 — Integration testing and local verification
 
-- [ ] Run the full engine, word-management, and API test suite and resolve failures.
-- [ ] Test actual browser flows for each difficulty, correct/incorrect guesses, a win, a loss, and restarting after completion.
-- [ ] Verify invalid and repeated requests do not consume lives or corrupt state.
-- [ ] Verify independent games do not affect each other.
-- [ ] Inspect browser responses and assets to confirm the active answer is not exposed.
+Automated portion verified: 77 Python tests and browser suites with 43 walkthrough
+assertions, 22 edge scenarios, and 9 integration scenarios passed. Checked items
+below have automated evidence; manual gameplay and Developer Tools review are
+still pending in `MANUAL_TESTING.md`. Phase 5 is not complete yet.
+
+- [x] Run the full engine, word-management, and API test suite and resolve failures.
+- [x] Test actual browser flows for each difficulty, correct/incorrect guesses, a win, a loss, and restarting after completion.
+- [x] Verify invalid and repeated requests do not consume lives or corrupt state.
+- [x] Verify independent games do not affect each other.
+- [x] Inspect browser responses and assets to confirm the active answer is not exposed.
 - [ ] Use Chrome Developer Tools to inspect at least one guess request and its JSON response.
 - [ ] Record the request → Flask → JSON → browser-update sequence for the report and demonstration.
 - [ ] Verify installation and startup from the documented dependency/setup instructions.
-- [ ] Document actual results and known limitations; commit/push verified fixes.
+- [x] Document actual automated results and known limitations; commit/push verified test additions. Add manual evidence after the pending review.
 
 Completion: required flows and failure cases are verified locally with reproducible evidence.
 

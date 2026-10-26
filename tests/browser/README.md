@@ -10,6 +10,11 @@ fixtures are only for QA; normal play uses the project's real word lists.
 boundaries, failed sync, remote completion, timeout, and late-response recovery.
 Both suites clean up listeners/routes so they can run sequentially in one page.
 
+`integration.js` adds **9 connected-flow scenarios**: full win/loss and restart
+for each difficulty, two-tab isolation, reload behavior, and browser Offline/Online
+recovery. It compares the displayed pattern, history, lives, drawing, button
+states, and terminal message with real server responses after each action.
+
 ## Reproduce
 
 Start Docker Desktop, build the dependency image using the command in
@@ -26,6 +31,7 @@ New-Item -ItemType Directory -Path output/playwright -Force | Out-Null
 npx --yes --package @playwright/cli playwright-cli -s=hangman-qa open http://127.0.0.1:5055 --headed
 npx --yes --package @playwright/cli playwright-cli -s=hangman-qa --raw run-code --filename tests/browser/check.js
 npx --yes --package @playwright/cli playwright-cli -s=hangman-qa --raw run-code --filename tests/browser/edge_cases.js
+npx --yes --package @playwright/cli playwright-cli -s=hangman-qa --raw run-code --filename tests/browser/integration.js
 npx --yes --package @playwright/cli playwright-cli -s=hangman-qa close
 ```
 
@@ -83,3 +89,8 @@ The timer approach follows the [official Playwright Clock documentation](https:/
 The edge suite returns a JSON summary on success and throws a detailed failure
 report when a scenario fails. Inspect CLI output as well as process status:
 tool-level errors can be reported in the CLI output independently of shell status.
+
+The integration run passed all 9 scenarios with **51 response/display comparisons**
+and no page runtime errors. Request routing is not mocked in these scenarios:
+the offline case uses the browser context's actual offline mode. Secondary tabs
+and listeners are closed/removed in cleanup, and offline mode is always reset.

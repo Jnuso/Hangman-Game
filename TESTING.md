@@ -1,8 +1,9 @@
 # Test cases and results
 
-Current result: **73 passing Python test methods** (18 engine, 17 word management,
-32 API/live HTTP, 6 browser-asset delivery), plus **43 browser walkthrough
-assertions and 22 browser edge-case scenarios**.
+Current result: **77 passing Python test methods** (18 engine, 17 word management,
+32 API/live HTTP, 6 browser-asset delivery, 4 integration), plus **43 browser
+walkthrough assertions, 22 browser edge scenarios, and 9 browser integration
+scenarios**. Manual Phase 5 checks remain pending in `MANUAL_TESTING.md`.
 Earlier counts below describe the runs at those milestones.
 
 The suite uses standard-library `unittest`, known answers for engine scenarios,
@@ -199,3 +200,35 @@ JSON 405 responses/Allow headers on page and static routes. Full Docker suite:
 **73 tests passed, exit code 0**. JavaScript syntax checks passed. Expected injected
 resource errors are distinct from runtime errors; final browser runs had no page
 runtime errors. Cross-browser, physical-device, and screen-reader limits remain.
+
+## Phase 5 — Automated integration before manual review
+
+Added four unittest methods in `tests/test_integration.py`:
+
+- A controlled API win for each of all 120 bundled words, including normalized
+  uppercase guesses, persisted GET state, exact public fields during play, and
+  correct terminal pattern/answer. Only random selection is patched; Flask and
+  the game engine are real.
+- A six-miss API loss for each word, including zero-life boundary, no answer or
+  extra public fields while playing, terminal reveal, and post-game rejection.
+- The actual `server.py` startup command in a subprocess launched from an unrelated
+  working directory, serving HTML/CSS/JS and the API over real loopback HTTP.
+- Actual process stop/restart: old IDs become 404 and fresh games work.
+
+The two word-flow methods contain **240 subtest game flows**, not 240 independent
+test methods. Process tests need a free port 5000 and skip if it is occupied.
+Verified Docker execution had **77 tests pass with no skips**. This proves clean
+process startup with the installed pinned dependencies, not a fresh native
+Windows dependency installation.
+
+Added `tests/browser/integration.js`: all **9 scenarios passed**, performing 51
+API-response/display comparisons. Every letter button's disabled/correct/incorrect
+state, word label, lives, drawing, history, difficulty, GET persistence, and
+terminal answer are compared against actual server state. Full wins and losses
+at all difficulties, restart, two separate tabs, reload, and real browser offline
+recovery are exercised. No production source change was needed.
+
+All three browser suites passed sequentially in one Chrome session (43/22/9),
+with no page runtime errors. HTML/CSS/JS manual inspection, the required Chrome
+Developer Tools request/response walkthrough, native fresh installation, and
+the user's own gameplay review remain explicitly pending.

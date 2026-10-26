@@ -6,7 +6,7 @@ Repository: https://github.com/Jnuso/Hangman-Game
 
 ## Current status
 
-Phase 1 prepares the development environment and repository. The game engine, word lists, API, browser interface, and public deployment are not implemented yet. There is no runnable server or game test suite at this stage.
+Phase 1 setup is complete. Phase 2 includes the game engine, word manager, three curated word lists, and 35 automated tests passing in a Python 3.14 Linux Docker container. The API, browser interface, and public deployment are not implemented. There is no runnable server yet.
 
 See `TODO.md` for the accepted phased plan. Implement and verify one phase at a time.
 
@@ -53,17 +53,21 @@ Verify dependencies:
 .\.venv\Scripts\python.exe -c "from importlib.metadata import version; import flask; print('Flask', version('Flask'))"
 ```
 
-For macOS/Linux, create the environment with `python3 -m venv .venv` and use `.venv/bin/python` instead of `.\.venv\Scripts\python.exe` in subsequent commands. Those platforms have not yet been verified for this project.
+For macOS/Linux, create the environment with `python3 -m venv .venv` and use `.venv/bin/python` instead of `.\.venv\Scripts\python.exe` in subsequent commands. The Phase 2 core tests have passed in Linux Docker; a full macOS/Linux Flask installation has not been verified.
 
 ## Tests
 
-The project will use Python's built-in `unittest`; it requires no additional test framework dependency.
+The project uses Python's built-in `unittest`; it requires no additional test framework dependency.
 
 ```powershell
 .\.venv\Scripts\python.exe -m unittest discover -s tests -p 'test_*.py' -v
 ```
 
-At Phase 1 this discovers **zero tests**. That checks the discovery command only, not application behavior. Meaningful engine and API tests will be added with their implementation phases.
+The suite currently contains **35 test methods**, with additional input combinations
+covered by `subTest`. All passed in a Python 3.14 Linux Docker container. See
+`TESTING.md` for the requirement coverage and Docker reproduction command. API
+tests will follow with the API implementation; no HTTP or browser behavior has
+been verified yet.
 
 ## Project layout
 
@@ -74,17 +78,39 @@ Hangman-Game/
 ├── TODO.md
 ├── README.md
 ├── DEVELOPMENT.md
+├── TESTING.md
 ├── requirements.txt
 ├── .gitignore
+├── game.py
+├── word_manager.py
 ├── reference/
 │   ├── TODO.original.md
 │   └── cursor_transcript.md
 ├── static/       # Browser assets added in Phase 4
-├── words/        # Difficulty lists added in Phase 2
+├── words/        # Three starter difficulty lists and provenance/format notes
 └── tests/        # Tests added alongside implemented features
 ```
 
-Source modules `game.py` and `word_manager.py` will be added at the repository root in Phase 2; `server.py` will follow in Phase 3. Empty directories contain `.gitkeep` placeholders so Git preserves the structure.
+`game.py` and `word_manager.py` implement the Phase 2 core; `server.py` will follow in Phase 3. Empty directories contain `.gitkeep` placeholders so Git preserves the structure.
+
+## Game core
+
+`WordManager` loads all three word lists relative to its module and provides
+`choose_word(difficulty)`. See `words/README.md` for list provenance, difficulty
+choices, normalization, and invalid-file handling. The curated lists were created
+for this implementation; they are not the instructor's original lists.
+
+`HangmanGame(word, difficulty)` represents a single game. Its `guess(letter)`
+method accepts a single ASCII letter, normalizes case, and returns updated public
+state. Invalid guesses, duplicates, and guesses after completion raise dedicated
+`ValueError` subclasses before changing the history. Correct guesses reveal all
+occurrences; only incorrect guesses consume one of six lives.
+
+`to_dict()` constructs the state that a future API may return: `difficulty`,
+`pattern`, `guessed_letters`, `incorrect_letters`, `remaining_guesses`, and
+`status`. It adds `word` only after a win or loss. The future server must serialize
+through this method rather than returning the object's internal attributes.
+Neither module imports Flask. Phase 2 tests exercise these behaviors independently of a web server.
 
 ## Planned API and deployment
 

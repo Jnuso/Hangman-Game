@@ -31,3 +31,58 @@ The initial `venv` bootstrap failed because `ensurepip` could not write a bundle
 ### Limits at this phase
 
 There is no game engine, word data, API, browser application, or deployment yet. No full application tests exist. Only the Windows development setup has been verified.
+
+## Phase 2 — Implementation draft; testing deferred
+
+The user requested implementation now and tests in the next chat. This supersedes
+the plan's usual same-phase test-writing workflow for this work session. No test
+files were created and no engine behavior, data checks, or test commands were run
+during this implementation session. Phase 2 remains incomplete and its checklist
+items remain unchecked pending verification. Commit/push awaits that verification.
+
+Added `game.py` with a UI-independent `HangmanGame`, six lives, normalized ASCII
+guesses, duplicate/invalid/finished-game errors, derived pattern and status, and
+explicit public-state serialization. Returned history lists are copies so callers
+cannot change game history through a serialized response.
+
+Added `word_manager.py` with module-relative file loading, supported-difficulty
+validation, UTF-8/BOM handling, normalization, deduplication, clear file/line errors,
+and random selection. Added manually curated AI-assisted starter lists intended
+to contain 40 words per difficulty; their provenance and difficulty rationale are
+recorded in `words/README.md`. No new dependencies were needed.
+
+Static review checked the source against the planned rules, focusing on validation
+before mutation, all occurrences of a letter being revealed, and explicit omission
+of `word` in active-game serialization. This is not evidence of passing tests.
+
+### Next-chat testing handoff
+
+- Test word normalization, duplicate removal, blank lines, BOM, invalid entries,
+  missing/empty/unreadable files, default paths, and all supported difficulties.
+- Check the bundled lists, intended entry counts, and difficulty selection.
+- Test correct and incorrect guesses, repeated letters, uppercase guesses, invalid
+  input types, Unicode, duplicates, win/loss boundaries, and post-game rejection.
+- Verify rejected guesses leave state unchanged, histories cannot be mutated via
+  returned lists, and the answer is omitted while playing and revealed at the end.
+- Resolve findings, record actual test evidence, update the Phase 2 checklist, and
+  commit/push only after verification.
+
+## Phase 2 — Test implementation and verification
+
+After reviewing code-reading methods and test-case/edge-case concepts, the user
+authorized creating the tests. Added 35 unittest methods: 18 for the engine and
+17 for normalization, word files, resources, and word-to-game integration.
+`subTest` covers multiple inputs inside several methods. `TESTING.md` maps the
+requirements to representative checks and gives reproduction commands.
+
+Executed the full suite in `python:3.14-slim` with a read-only project mount and
+network disabled. Result: **35 tests passed, exit code 0**. The tests required no
+changes to production modules. No Flask, browser, or deployment checks were run;
+those components have not been implemented yet.
+
+The coding worker initially rejected this project path because it is outside its
+configured roots; it also could not access Docker while Docker Desktop was off.
+Started Docker Desktop and used an isolated, explicitly supplied source snapshot
+for independent worker review. The main suite ran directly inside Docker after
+allowing access to the engine outside the sandbox; no host Python test run was
+substituted for Docker verification.

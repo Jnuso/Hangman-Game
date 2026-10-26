@@ -41,17 +41,21 @@ Completion: the repository has an accepted plan and a documented development/tes
 
 ## Phase 2 — Game engine and word management
 
-- [ ] Supply `words/easy.txt`, `words/medium.txt`, and `words/hard.txt`; document how the lists distinguish difficulty and their source.
-- [ ] Normalize and deduplicate words; validate supported A–Z words and handle missing or empty lists clearly.
-- [ ] Implement random selection by difficulty and reject unsupported difficulties.
-- [ ] Implement a UI-independent Python game model with six allowed incorrect guesses.
-- [ ] Track guessed letters, incorrect letters, masked pattern, and remaining guesses.
-- [ ] Accept one A–Z letter per guess, normalize case, and reject invalid or repeated guesses without changing game state.
-- [ ] Reveal every occurrence of a correctly guessed letter.
-- [ ] Detect `playing`, `won`, and `lost`; reject further guesses after completion.
-- [ ] Produce client-safe state that omits the answer while playing and reveals it after completion.
-- [ ] Test word loading, all difficulties, input validation, duplicates, repeated letters, wins, losses, post-game guesses, and answer disclosure.
-- [ ] Verify this phase, record results, and commit/push.
+Status: engine and word-management implementation verified by 35 passing unittest
+methods in a Python 3.14 Linux Docker container. Test cases were added after the
+user's code review and testing-concept discussion. See `TESTING.md` for coverage.
+
+- [x] Supply `words/easy.txt`, `words/medium.txt`, and `words/hard.txt`; document how the lists distinguish difficulty and their source.
+- [x] Normalize and deduplicate words; validate supported A–Z words and handle missing or empty lists clearly.
+- [x] Implement random selection by difficulty and reject unsupported difficulties.
+- [x] Implement a UI-independent Python game model with six allowed incorrect guesses.
+- [x] Track guessed letters, incorrect letters, masked pattern, and remaining guesses.
+- [x] Accept one A–Z letter per guess, normalize case, and reject invalid or repeated guesses without changing game state.
+- [x] Reveal every occurrence of a correctly guessed letter.
+- [x] Detect `playing`, `won`, and `lost`; reject further guesses after completion.
+- [x] Produce client-safe state that omits the answer while playing and reveals it after completion.
+- [x] Test word loading, all difficulties, input validation, duplicates, repeated letters, wins, losses, post-game guesses, and answer disclosure.
+- [x] Verify this phase, record results, and commit/push.
 
 Completion: the rules and word selection pass automated tests without running Flask.
 

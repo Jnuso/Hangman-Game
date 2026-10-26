@@ -86,3 +86,10 @@ Started Docker Desktop and used an isolated, explicitly supplied source snapshot
 for independent worker review. The main suite ran directly inside Docker after
 allowing access to the engine outside the sandbox; no host Python test run was
 substituted for Docker verification.
+
+The independent review worker did not finish: its first attempt hit a provider
+rate limit, and a resumed attempt hit a provider timeout. Its result contained no
+usable review or passing test evidence, so no worker artifacts were integrated.
+The 35-test passing result above comes from the primary agent's direct Docker run,
+not from that incomplete worker job. Phase 2 implementation and tests were
+committed and pushed as `bb6743d`.

@@ -6,7 +6,7 @@ Repository: https://github.com/Jnuso/Hangman-Game
 
 ## Current status
 
-Phases 1–3 are complete: setup, game engine, word management, and the Flask REST API. All 56 automated tests pass in Python 3.14 Docker, including real loopback HTTP win/loss flows. A separate host-to-container HTTP game also completed successfully. The browser interface and public deployment are not implemented yet.
+Phases 1–3 are complete: setup, game engine, word management, and the Flask REST API. All 67 automated tests pass in Python 3.14 Docker, including synchronized concurrent requests and real loopback HTTP win/loss flows. A separate host-to-container HTTP game also completed successfully. The browser interface and public deployment are not implemented yet.
 
 See `TODO.md` for the accepted phased plan. Implement and verify one phase at a time.
 
@@ -63,7 +63,7 @@ The project uses Python's built-in `unittest`; it requires no additional test fr
 .\.venv\Scripts\python.exe -m unittest discover -s tests -p 'test_*.py' -v
 ```
 
-The suite currently contains **56 test methods**, with additional input combinations
+The suite currently contains **67 test methods**, with additional input combinations
 covered by `subTest`. All passed in a Python 3.14 Linux Docker container. See
 `TESTING.md` for the requirement coverage and Docker reproduction command. API
 tests cover request validation, status codes, game isolation, answer disclosure,

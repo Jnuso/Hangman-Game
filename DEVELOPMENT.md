@@ -136,3 +136,20 @@ Limitations: browser UI and cloud hosting remain future phases. Games are not
 persistent, automatically expired, authenticated, or shared between processes.
 Use one worker for this in-memory design. Native Windows Python API execution
 has not been verified; the HTTP smoke client ran on Windows against Linux Docker.
+
+### Phase 3 follow-up — Edge cases and race conditions
+
+At the user's request, extended API coverage before the code walkthrough. Added
+11 tests and upgraded the two-request duplicate test to eight synchronized
+same-letter/case-variant requests. Barrier-based starts replace the previous
+unsynchronized submission; each thread has its own Flask client.
+
+Added races at the final life and winning transition, distinct-guess accounting,
+read/write snapshot consistency, parallel creation, and invalid-versus-valid
+requests. Added exact-size boundary checks, invalid encoding/trailing JSON,
+accepted JSON media types, error cache headers, and last-life rejection behavior.
+
+Full Docker suite: **67 tests passed, exit code 0**. No production-code changes
+were needed. Tests accept either valid serial processing order and check final
+state invariants; they do not claim exhaustive scheduling coverage or test
+multi-process shared storage. Documentation records the expanded cases.

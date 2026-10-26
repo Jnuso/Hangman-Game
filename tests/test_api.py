@@ -4,7 +4,7 @@ from concurrent.futures import ThreadPoolExecutor
 import json
 from pathlib import Path
 import tempfile
-from threading import Thread
+from threading import Barrier, Thread
 import unittest
 from urllib.error import HTTPError
 from urllib.request import Request, urlopen
@@ -39,6 +39,20 @@ class ApiTests(unittest.TestCase):
         self.assertEqual(set(response.json), {"error"})
         self.assertEqual(response.json["error"]["code"], code)
         self.assertTrue(response.json["error"]["message"])
+
+    def parallel_requests(self, requests):
+        """Release one independent client per request from a shared start gate."""
+        start = Barrier(len(requests), timeout=5)
+
+        def send(spec):
+            method, path, body = spec
+            with self.app.test_client() as client:
+                start.wait()
+                response = client.open(path, method=method, json=body)
+                return response.status_code, response.json
+
+        with ThreadPoolExecutor(max_workers=len(requests)) as pool:
+            return list(pool.map(send, requests))
 
     def test_create_and_retrieve_all_difficulties(self):
         for difficulty, length in (("easy", 5), ("medium", 6), ("hard", 6)):
@@ -176,15 +190,172 @@ class ApiTests(unittest.TestCase):
 
     def test_simultaneous_duplicate_guesses_accept_only_one(self):
         game_id = self.new_game()["game_id"]
-        def submit(_):
-            with self.app.test_client() as client:
-                return client.post(f"/api/games/{game_id}/guess", json={"letter": "z"}).status_code
-        with ThreadPoolExecutor(max_workers=2) as pool:
-            statuses = list(pool.map(submit, range(2)))
-        self.assertEqual(sorted(statuses), [200, 409])
+        results = self.parallel_requests([
+            ("POST", f"/api/games/{game_id}/guess", {"letter": letter})
+            for letter in ("z", "Z") * 4
+        ])
+        self.assertEqual(sorted(status for status, _ in results), [200] + [409] * 7)
+        for status, state in results:
+            if status == 409:
+                self.assertEqual(state["error"]["code"], "duplicate_guess")
         state = self.client.get(f"/api/games/{game_id}").json
         self.assertEqual(state["remaining_guesses"], 5)
         self.assertEqual(state["guessed_letters"], ["z"])
+
+    def test_concurrent_distinct_guesses_are_both_recorded(self):
+        game_id = self.new_game()["game_id"]
+        results = self.parallel_requests([
+            ("POST", f"/api/games/{game_id}/guess", {"letter": letter})
+            for letter in ("p", "z")
+        ])
+        self.assertEqual([status for status, _ in results], [200, 200])
+        state = self.client.get(f"/api/games/{game_id}").json
+        self.assertCountEqual(state["guessed_letters"], ["p", "z"])
+        self.assertEqual(state["pattern"], "_ p p _ _")
+        self.assertEqual(state["remaining_guesses"], 5)
+        self.assertEqual(state["incorrect_letters"], ["z"])
+
+    def test_concurrent_misses_with_one_life_accept_exactly_one(self):
+        game_id = self.new_game()["game_id"]
+        for letter in "bcdfg":
+            self.guess(game_id, letter)
+        results = self.parallel_requests([
+            ("POST", f"/api/games/{game_id}/guess", {"letter": letter})
+            for letter in "hijk"
+        ])
+        self.assertEqual(sorted(status for status, _ in results), [200, 409, 409, 409])
+        for status, body in results:
+            if status == 409:
+                self.assertEqual(body["error"]["code"], "game_finished")
+        state = self.client.get(f"/api/games/{game_id}").json
+        self.assertEqual(state["status"], "lost")
+        self.assertEqual(state["remaining_guesses"], 0)
+        self.assertEqual(len(state["incorrect_letters"]), 6)
+        self.assertEqual(len(state["guessed_letters"]), 6)
+
+    def test_winning_letter_racing_final_miss_has_one_valid_terminal_outcome(self):
+        game_id = self.new_game()["game_id"]
+        for letter in "aplbcdfg":
+            self.guess(game_id, letter)
+        results = self.parallel_requests([
+            ("POST", f"/api/games/{game_id}/guess", {"letter": letter})
+            for letter in ("e", "z")
+        ])
+        self.assertEqual(sorted(status for status, _ in results), [200, 409])
+        state = self.client.get(f"/api/games/{game_id}").json
+        accepted = next(body for status, body in results if status == 200)
+        self.assertEqual(state, accepted)
+        self.assertEqual(state["word"], "apple")
+        if state["status"] == "won":
+            self.assertEqual(state["remaining_guesses"], 1)
+            self.assertEqual(state["pattern"], "a p p l e")
+            self.assertNotIn("z", state["guessed_letters"])
+        else:
+            self.assertEqual(state["status"], "lost")
+            self.assertEqual(state["remaining_guesses"], 0)
+            self.assertEqual(state["pattern"], "a p p l _")
+            self.assertNotIn("e", state["guessed_letters"])
+        rejected = next(body for status, body in results if status == 409)
+        self.assertEqual(rejected["error"]["code"], "game_finished")
+
+    def test_get_racing_winning_guess_returns_a_complete_before_or_after_snapshot(self):
+        game_id = self.new_game()["game_id"]
+        for letter in "apl":
+            self.guess(game_id, letter)
+        path = f"/api/games/{game_id}"
+        before = self.client.get(path).json
+        results = self.parallel_requests([
+            ("GET", path, None),
+            ("POST", path + "/guess", {"letter": "e"}),
+        ])
+        self.assertEqual([status for status, _ in results], [200, 200])
+        after = self.client.get(path).json
+        self.assertEqual(after["status"], "won")
+        self.assertIn(results[0][1], (before, after))
+        self.assertEqual(results[1][1], after)
+
+    def test_parallel_game_creation_produces_independent_retrievable_ids(self):
+        results = self.parallel_requests([
+            ("POST", "/api/games", {"difficulty": "easy"}) for _ in range(8)
+        ])
+        self.assertEqual([status for status, _ in results], [201] * 8)
+        states = [state for _, state in results]
+        self.assertEqual(len({state["game_id"] for state in states}), 8)
+        for state in states:
+            self.assertEqual(self.client.get(f"/api/games/{state['game_id']}").json, state)
+
+    def test_invalid_request_does_not_block_a_concurrent_valid_guess(self):
+        game_id = self.new_game()["game_id"]
+        results = self.parallel_requests([
+            ("POST", f"/api/games/{game_id}/guess", {"letter": value})
+            for value in ([], "z")
+        ])
+        self.assertEqual([status for status, _ in results], [400, 200])
+        state = self.client.get(f"/api/games/{game_id}").json
+        self.assertEqual(state["remaining_guesses"], 5)
+        self.assertEqual(state["guessed_letters"], ["z"])
+
+    def test_request_body_limit_accepts_exact_limit_and_rejects_one_byte_over(self):
+        limit = self.app.config["MAX_CONTENT_LENGTH"]
+        for size, expected_status in ((limit, 200), (limit + 1, 413)):
+            with self.subTest(size=size):
+                game_id = self.new_game()["game_id"]
+                path = f"/api/games/{game_id}"
+                before = self.client.get(path).json
+                payload = b'{"letter":"z"}'
+                payload += b" " * (size - len(payload))
+                response = self.client.post(path + "/guess", data=payload, content_type="application/json")
+                self.assertEqual(response.status_code, expected_status)
+                if size > limit:
+                    self.assert_error(response, 413, "request_entity_too_large")
+                    self.assertEqual(self.client.get(path).json, before)
+                else:
+                    self.assertEqual(response.json["remaining_guesses"], 5)
+
+    def test_broken_encoding_and_trailing_json_do_not_change_state(self):
+        game_id = self.new_game()["game_id"]
+        path = f"/api/games/{game_id}"
+        before = self.client.get(path).json
+        for payload in (b'{"letter":"\xff"}', b'{"letter":"z"} {}', b'{"letter":"z"}\x00'):
+            with self.subTest(payload=payload):
+                response = self.client.post(path + "/guess", data=payload, content_type="application/json")
+                self.assert_error(response, 400, "bad_request")
+                self.assertEqual(self.client.get(path).json, before)
+        # An HTTP parsing failure must not leave the lock held.
+        self.assertEqual(self.guess(game_id, "z").status_code, 200)
+
+    def test_supported_json_media_types_with_charset_are_accepted(self):
+        for content_type in ("application/json; charset=utf-8", "application/vnd.hangman+json"):
+            with self.subTest(content_type=content_type):
+                response = self.client.post("/api/games", data='{"difficulty":"easy"}', content_type=content_type)
+                self.assertEqual(response.status_code, 201)
+                self.assertEqual(response.json["difficulty"], "easy")
+
+    def test_error_responses_are_not_cacheable(self):
+        game_id = self.new_game()["game_id"]
+        self.guess(game_id, "z")
+        for response in (
+            self.guess(game_id, "z"),
+            self.guess(game_id, "ab"),
+            self.client.get("/api/games/missing"),
+            self.client.get("/api/games"),
+        ):
+            with self.subTest(status=response.status_code):
+                self.assertEqual(response.headers["Cache-Control"], "no-store")
+
+    def test_invalid_and_duplicate_guesses_cannot_consume_last_life(self):
+        game_id = self.new_game()["game_id"]
+        for letter in "bcdfg":
+            self.guess(game_id, letter)
+        before = self.client.get(f"/api/games/{game_id}").json
+        self.assertEqual(before["remaining_guesses"], 1)
+        self.assert_error(self.guess(game_id, "B"), 409, "duplicate_guess")
+        self.assert_error(self.guess(game_id, "ab"), 400, "invalid_guess")
+        self.assertEqual(self.client.get(f"/api/games/{game_id}").json, before)
+        for letter in "aple":
+            response = self.guess(game_id, letter)
+        self.assertEqual(response.json["status"], "won")
+        self.assertEqual(response.json["remaining_guesses"], 1)
 
     def test_unknown_routes_and_wrong_methods_return_json_and_preserve_allow(self):
         self.assert_error(self.client.get("/missing"), 404, "not_found")

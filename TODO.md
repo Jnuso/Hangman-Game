@@ -61,7 +61,7 @@ Completion: the rules and word selection pass automated tests without running Fl
 
 ## Phase 3 — Flask server and REST API
 
-Verified: 56 tests pass in Docker, including 21 API/live-HTTP methods. A separate
+Verified: 67 tests pass in Docker, including 32 API/live-HTTP methods. A separate
 host-to-container game also completed. See `API.md` and `TESTING.md`.
 
 - [x] Implement Flask application setup and in-memory storage with unique IDs and separate game states.

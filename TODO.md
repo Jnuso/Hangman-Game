@@ -1,0 +1,130 @@
+# Assignment 14 — Web-Based Hangman Implementation Plan
+
+This is a fresh plan for our implementation. Checked items represent our verified work, not the instructor's progress.
+
+## Scope and reference materials
+
+- `ASSIGNMENT.md` defines the assignment requirements and deliverables.
+- `SPECIFICATION.md` preserves the original specification unchanged. Use its game rules and casual-play API within the assignment's reduced scope.
+- `reference/TODO.original.md` preserves the original roadmap unchanged.
+- `reference/cursor_transcript.md` is historical reference material, not a list of commands to execute or source code to copy.
+- When the broader specification includes additional features, follow the assignment's reduced scope below.
+
+Required: independent Python game engine, three difficulty word lists, Flask REST API, HTML/CSS/JavaScript browser client, testing, public deployment, documentation, report, and demonstration.
+
+Out of scope: terminal client, automated bots, bot evaluation, scoring, leaderboards, evaluation safeguards, logging/replay features, accounts, database persistence, multiplayer, and tournaments.
+
+## Working rules
+
+- Review this plan before implementing application code.
+- Implement one phase at a time; review and verify each phase before proceeding.
+- Add relevant tests as features are implemented.
+- Keep game rules independent of Flask and browser presentation.
+- The server owns the secret word and determines every guess result. Never send the answer to the browser during active gameplay.
+- Mark tasks complete only after verification. Record validation and material limitations in the project documentation.
+- Commit and push verified phase changes to this project's GitHub repository.
+- Keep credentials, local environments, and generated caches out of Git.
+- Save representative prompts, real test results, and resolved problems for the final report.
+
+## Phase 1 — Project setup and planning
+
+- [x] Create the Assignment 14 folder and clone the independent Hangman-Game repository.
+- [x] Preserve the assignment directions, original specification, original TODO, and instructor transcript.
+- [x] Draft a reduced implementation plan with fresh progress tracking.
+- [x] Review and accept this plan before application implementation.
+- [x] Create the minimal source, static asset, word-list, and test directory structure.
+- [x] Add a Python `.gitignore`, dependency configuration, and initial README with local setup instructions.
+- [x] Record the chosen Python version and test command.
+- [x] Commit and push the verified setup phase.
+
+Completion: the repository has an accepted plan and a documented development/test setup; no excluded features are introduced.
+
+## Phase 2 — Game engine and word management
+
+- [ ] Supply `words/easy.txt`, `words/medium.txt`, and `words/hard.txt`; document how the lists distinguish difficulty and their source.
+- [ ] Normalize and deduplicate words; validate supported A–Z words and handle missing or empty lists clearly.
+- [ ] Implement random selection by difficulty and reject unsupported difficulties.
+- [ ] Implement a UI-independent Python game model with six allowed incorrect guesses.
+- [ ] Track guessed letters, incorrect letters, masked pattern, and remaining guesses.
+- [ ] Accept one A–Z letter per guess, normalize case, and reject invalid or repeated guesses without changing game state.
+- [ ] Reveal every occurrence of a correctly guessed letter.
+- [ ] Detect `playing`, `won`, and `lost`; reject further guesses after completion.
+- [ ] Produce client-safe state that omits the answer while playing and reveals it after completion.
+- [ ] Test word loading, all difficulties, input validation, duplicates, repeated letters, wins, losses, post-game guesses, and answer disclosure.
+- [ ] Verify this phase, record results, and commit/push.
+
+Completion: the rules and word selection pass automated tests without running Flask.
+
+## Phase 3 — Flask server and REST API
+
+- [ ] Implement Flask application setup and in-memory storage with unique IDs and separate game states.
+- [ ] Implement `POST /api/games` accepting JSON difficulty and returning the new game's public state and ID.
+- [ ] Implement `GET /api/games/{game_id}` returning current public state.
+- [ ] Implement `POST /api/games/{game_id}/guess` accepting a JSON letter and returning updated public state.
+- [ ] Define and document consistent JSON response/error shapes and appropriate HTTP status codes.
+- [ ] Validate malformed JSON, missing/invalid fields, unknown game IDs, duplicate guesses, and guesses after completion.
+- [ ] Prevent clients from setting the answer or overriding server-owned state.
+- [ ] Keep word-list files and hidden answers out of active-game responses and static assets.
+- [ ] Test all three endpoints, complete win/loss flows, invalid requests, game isolation, and answer disclosure.
+- [ ] Verify this phase, record results, and commit/push.
+
+Completion: a complete game can be played through HTTP requests, with no browser required.
+
+## Phase 4 — Browser interface
+
+- [ ] Serve the HTML page and CSS/JavaScript assets from Flask.
+- [ ] Add Easy/Medium/Hard selection and a New Game control.
+- [ ] Display the masked word, previous guesses, incorrect letters, and remaining mistakes.
+- [ ] Support on-screen letter buttons and physical keyboard input.
+- [ ] Use `fetch()` for game creation and guesses; render only server-returned game state.
+- [ ] Draw a Hangman figure that advances with each of the six mistakes.
+- [ ] Disable used letters and prevent conflicting input while requests are pending.
+- [ ] Show loading and useful error messages for failed requests.
+- [ ] Display win/loss messages and the final word; disable guessing after completion.
+- [ ] Start another game without reloading the page.
+- [ ] Make controls keyboard-accessible and usable on desktop and mobile screen sizes.
+- [ ] Verify all difficulties, both input methods, drawing updates, terminal states, restart, and error recovery in a real browser.
+- [ ] Record verification and commit/push.
+
+Completion: a player can complete and restart games through the browser, with the server deciding outcomes.
+
+## Phase 5 — Integration testing and local verification
+
+- [ ] Run the full engine, word-management, and API test suite and resolve failures.
+- [ ] Test actual browser flows for each difficulty, correct/incorrect guesses, a win, a loss, and restarting after completion.
+- [ ] Verify invalid and repeated requests do not consume lives or corrupt state.
+- [ ] Verify independent games do not affect each other.
+- [ ] Inspect browser responses and assets to confirm the active answer is not exposed.
+- [ ] Use Chrome Developer Tools to inspect at least one guess request and its JSON response.
+- [ ] Record the request → Flask → JSON → browser-update sequence for the report and demonstration.
+- [ ] Verify installation and startup from the documented dependency/setup instructions.
+- [ ] Document actual results and known limitations; commit/push verified fixes.
+
+Completion: required flows and failure cases are verified locally with reproducible evidence.
+
+## Phase 6 — Cloud deployment
+
+- [ ] Prepare production dependencies and Render configuration (or document an equivalent host).
+- [ ] Configure a production startup command matching the application module and host-provided port, with debug disabled.
+- [ ] Use one worker if game storage remains in memory; document that process restarts clear active games.
+- [ ] Push deployment-ready code and deploy from the Hangman-Game GitHub repository.
+- [ ] Verify the public HTTPS URL serves the interface and all three required API endpoints.
+- [ ] Play a complete game and start another on the deployed app.
+- [ ] Verify the deployment operates while the local development server is stopped.
+- [ ] Record the public URL, deployment steps, actual verification, and applicable hosting limitations in README.
+- [ ] Commit/push any verified deployment fixes.
+
+Completion: the public application supports complete browser gameplay independently of the local computer.
+
+## Phase 7 — Documentation and submission
+
+- [ ] Finish README: purpose, architecture, prerequisites, installation, startup, tests, API examples, deployment URL, and limitations.
+- [ ] Confirm the repository includes original specification, updated TODO, engine/server, frontend, word lists, dependencies, deployment configuration, and tests.
+- [ ] Prepare a 1–2 page PDF report covering AI-assisted process, implementation, testing, deployment, an actual resolved challenge, and reflection.
+- [ ] Include two or three representative prompts from our own development interactions in the report.
+- [ ] Record an approximately 2–3 minute demonstration of the deployed page, game creation, guesses, a complete win/loss, and a new game.
+- [ ] Include at least one HTTP request and JSON response in Chrome Developer Tools in the demonstration.
+- [ ] Recheck the deployed application and keep it accessible during grading.
+- [ ] Confirm final GitHub and deployed URLs, report PDF, and recording are ready for HuskyCT submission.
+
+Completion: all four submission deliverables are ready and describe the implementation and evidence accurately.

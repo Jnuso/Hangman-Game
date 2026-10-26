@@ -1,7 +1,8 @@
 # Hangman REST API — Phase 3
 
-The Flask server owns the word, game rules, and game state. All responses are
-JSON, including HTTP errors. Responses use `Cache-Control: no-store`.
+The Flask server owns the word, game rules, and game state. All API responses are
+JSON, including HTTP errors. Responses use `Cache-Control: no-store`. The root
+page and static assets use their corresponding HTML/CSS/JavaScript types.
 
 ## Start locally
 
@@ -12,8 +13,8 @@ From the repository root after installing `requirements.txt`:
 ```
 
 The development server listens at `http://127.0.0.1:5000` with debug disabled.
-There is no webpage yet: `/` returns JSON 404 until Phase 4. This command is for
-local development; a production server will be configured in Phase 6.
+Open `/` to play in the browser, or use the JSON endpoints below. This command is
+for local development; a production server will be configured in Phase 6.
 
 ## Create a game
 
@@ -110,8 +111,8 @@ until shared storage is introduced. Games currently remain in memory until the
 process restarts; expiration and persistence are not implemented.
 
 There is no login or per-player ownership: anyone with a game ID can interact
-with that game. Browser assets are deferred to Phase 4. Word lists and Python
-source are not exposed as static routes.
+with that game. Browser assets are served from `/static/` and the page from `/`.
+Word lists and Python source are not exposed as static routes.
 
 ## References
 

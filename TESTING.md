@@ -1,7 +1,8 @@
 # Test cases and results
 
-Current result: **67 passing test methods** (18 engine, 17 word management, and
-32 API/live HTTP). Earlier counts below describe the runs at those milestones.
+Current result: **70 passing Python test methods** (18 engine, 17 word management,
+32 API/live HTTP, 3 browser-asset delivery), plus **43 real-browser assertions**.
+Earlier counts below describe the runs at those milestones.
 
 The suite uses standard-library `unittest`, known answers for engine scenarios,
 and temporary directories for file-loading scenarios. Tests use public behavior;
@@ -139,3 +140,27 @@ is a separate concern for Phase 4.
 
 The synchronization helper follows the Python documentation on
 [barriers and locks](https://docs.python.org/3.14/library/threading.html#barrier-objects).
+
+## Phase 4 — Browser interface
+
+Added three Flask delivery tests for the root page, asset content types, and
+rejected traversal/resource requests. Full Python suite: **70 tests passed** in
+the existing Python 3.14/Flask 3.1.3 Docker image.
+
+Chrome verification through Playwright CLI: **43 assertions passed**, with 32
+successful API responses inspected and no page JavaScript runtime errors. Three
+intentional resource failures (dropped response, missing game, failed creation)
+produced expected browser console entries. All three difficulties completed;
+easy win/loss and restart were exercised. Pending-request controls, duplicate keys,
+network recovery, keyboard activation, and 375px/320px layouts were checked.
+Desktop and 375px screenshots were visually inspected. No horizontal overflow
+was observed at either mobile width.
+
+The controlled server and browser script are preserved under `tests/browser/`.
+See its README for commands, exact coverage, and limits. The browser script is
+separate from unittest discovery. It uses real API responses for game state;
+route interception is limited to deliberate delay/error simulations.
+
+Browser UI works locally; cloud deployment, physical-device testing, other browser
+engines, screen-reader certification, and the Phase 5 demonstration-oriented
+Developer Tools review remain outstanding.

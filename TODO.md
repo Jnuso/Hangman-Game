@@ -79,19 +79,22 @@ Completion: a complete game can be played through HTTP requests, with no browser
 
 ## Phase 4 — Browser interface
 
-- [ ] Serve the HTML page and CSS/JavaScript assets from Flask.
-- [ ] Add Easy/Medium/Hard selection and a New Game control.
-- [ ] Display the masked word, previous guesses, incorrect letters, and remaining mistakes.
-- [ ] Support on-screen letter buttons and physical keyboard input.
-- [ ] Use `fetch()` for game creation and guesses; render only server-returned game state.
-- [ ] Draw a Hangman figure that advances with each of the six mistakes.
-- [ ] Disable used letters and prevent conflicting input while requests are pending.
-- [ ] Show loading and useful error messages for failed requests.
-- [ ] Display win/loss messages and the final word; disable guessing after completion.
-- [ ] Start another game without reloading the page.
-- [ ] Make controls keyboard-accessible and usable on desktop and mobile screen sizes.
-- [ ] Verify all difficulties, both input methods, drawing updates, terminal states, restart, and error recovery in a real browser.
-- [ ] Record verification and commit/push.
+Verified: 70 Python tests and 43 Chrome browser assertions passed. Desktop and
+mobile screenshots inspected; no horizontal overflow at 375px or 320px.
+
+- [x] Serve the HTML page and CSS/JavaScript assets from Flask.
+- [x] Add Easy/Medium/Hard selection and a New Game control.
+- [x] Display the masked word, previous guesses, incorrect letters, and remaining mistakes.
+- [x] Support on-screen letter buttons and physical keyboard input.
+- [x] Use `fetch()` for game creation and guesses; render only server-returned game state.
+- [x] Draw a Hangman figure that advances with each of the six mistakes.
+- [x] Disable used letters and prevent conflicting input while requests are pending.
+- [x] Show loading and useful error messages for failed requests.
+- [x] Display win/loss messages and the final word; disable guessing after completion.
+- [x] Start another game without reloading the page.
+- [x] Make controls keyboard-accessible and usable on desktop and mobile screen sizes.
+- [x] Verify all difficulties, both input methods, drawing updates, terminal states, restart, and error recovery in a real browser.
+- [x] Record verification and commit/push.
 
 Completion: a player can complete and restart games through the browser, with the server deciding outcomes.
 
@@ -110,6 +113,9 @@ Completion: a player can complete and restart games through the browser, with th
 Completion: required flows and failure cases are verified locally with reproducible evidence.
 
 ## Phase 6 — Cloud deployment
+
+Deploy from the user's GitHub repository to a Flask-capable host. Public hosting
+is intentionally deferred until this phase.
 
 - [ ] Prepare production dependencies and Render configuration (or document an equivalent host).
 - [ ] Configure a production startup command matching the application module and host-provided port, with debug disabled.

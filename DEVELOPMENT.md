@@ -153,3 +153,42 @@ Full Docker suite: **67 tests passed, exit code 0**. No production-code changes
 were needed. Tests accept either valid serial processing order and check final
 state invariants; they do not claim exhaustive scheduling coverage or test
 multi-process shared storage. Documentation records the expanded cases.
+
+## Phase 4 — Browser interface
+
+Implemented HTML, CSS, and JavaScript under `static/`, served from Flask with `/`
+as the entry page. The interface uses a paper/forest-green palette, responsive
+layout, SVG drawing, difficulty selection, letter buttons, physical keyboard,
+guess history, remaining chances, and win/loss messages. The browser renders API
+state and never selects a word or determines correctness independently.
+
+A busy flag and disabled controls serialize client requests. Used letters and
+terminal states disable guessing. Fetch calls have a 15-second timeout. If a
+guess response is lost, the interface blocks further guesses and offers Sync
+game, which retrieves state using GET instead of resubmitting an uncertain guess.
+Missing games prompt a restart. Errors, loading, and game outcomes use a polite
+live status region; controls have visible focus and descriptive labels. Reduced
+motion is respected, and guesses ignore input focused inside the difficulty
+selector. All dynamic text is inserted with textContent.
+
+Verification: **70 Python unittest methods passed** in Docker, including three
+new page/asset delivery and traversal tests. **43 Chrome browser assertions
+passed** through Playwright CLI against controlled server-side word lists.
+Inspected 32 successful API responses for active answer omission; no page runtime
+errors occurred. Expected resource errors were injected for recovery scenarios.
+The browser walkthrough covered all difficulties, both input methods, complete
+win/loss, drawing progression, restart without reload, pending controls, dropped
+response after acceptance, synchronization recovery, missing-game and creation
+failure, keyboard activation, reduced motion, and mobile widths 375px/320px.
+
+Captured and visually inspected desktop and mobile screenshots under ignored
+`output/playwright/`. Preserved the repeatable fixture server and CLI walkthrough
+under `tests/browser/`; production word lists remain separate. Browser launch
+initially failed inside the Windows sandbox; launching the isolated Playwright
+browser with the required process access resolved the tooling issue.
+
+The user specified GitHub-based deployment for Phase 6. No site registration or
+public hosting was performed. Remaining limits include refresh not restoring the
+active game, no physical mobile or other-engine coverage, no screen-reader audit,
+and no independent elapsed-time assertion for the full fetch-timeout path. Phase 5
+will perform the broader local audit and demonstration-oriented API inspection.

@@ -16,7 +16,7 @@ def create_app(word_manager: WordManager | None = None) -> Flask:
     Games last only for this process. A lock protects reads and updates within
     one process, but does not share games between production worker processes.
     """
-    app = Flask(__name__, static_folder=None)
+    app = Flask(__name__, static_folder="static")
     app.config["MAX_CONTENT_LENGTH"] = 16 * 1024
     manager = WordManager() if word_manager is None else word_manager
     games: dict[str, HangmanGame] = {}
@@ -58,6 +58,10 @@ def create_app(word_manager: WordManager | None = None) -> Flask:
     def public_state(game_id: str, game: HangmanGame) -> dict:
         # Never serialize game.__dict__: it contains the hidden answer.
         return {"game_id": game_id, **game.to_dict()}
+
+    @app.get("/")
+    def index():
+        return app.send_static_file("index.html")
 
     @app.post("/api/games")
     def create_game():

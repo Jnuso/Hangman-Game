@@ -6,7 +6,7 @@ Repository: https://github.com/Jnuso/Hangman-Game
 
 ## Current status
 
-Phases 1–3 are complete: setup, game engine, word management, and the Flask REST API. All 67 automated tests pass in Python 3.14 Docker, including synchronized concurrent requests and real loopback HTTP win/loss flows. A separate host-to-container HTTP game also completed successfully. The browser interface and public deployment are not implemented yet.
+Phases 1–4 are complete: setup, game engine, word management, Flask API, and a playable browser interface. All 70 Python tests pass in Docker, and 43 real-browser assertions passed in Chrome. The interface supports all difficulties, mouse/keyboard guesses, an SVG drawing, restart, and network-error recovery. Public deployment remains Phase 6 work.
 
 See `TODO.md` for the accepted phased plan. Implement and verify one phase at a time.
 
@@ -63,12 +63,13 @@ The project uses Python's built-in `unittest`; it requires no additional test fr
 .\.venv\Scripts\python.exe -m unittest discover -s tests -p 'test_*.py' -v
 ```
 
-The suite currently contains **67 test methods**, with additional input combinations
+The suite currently contains **70 Python test methods**, with additional input combinations
 covered by `subTest`. All passed in a Python 3.14 Linux Docker container. See
 `TESTING.md` for the requirement coverage and Docker reproduction command. API
 tests cover request validation, status codes, game isolation, answer disclosure,
-concurrent duplicate guesses, and complete games. Browser behavior is not yet
-implemented or verified.
+concurrent duplicate guesses, complete games, and HTML/CSS/JavaScript delivery.
+There are also **43 browser assertions**; see `tests/browser/README.md` for
+reproduction instructions and verification limits.
 
 ## Project layout
 
@@ -90,9 +91,9 @@ Hangman-Game/
 ├── reference/
 │   ├── TODO.original.md
 │   └── cursor_transcript.md
-├── static/       # Browser assets added in Phase 4
+├── static/       # index.html, style.css, app.js
 ├── words/        # Three starter difficulty lists and provenance/format notes
-└── tests/        # Tests added alongside implemented features
+└── tests/        # Core/API/asset tests and browser QA fixtures
 ```
 
 `game.py` and `word_manager.py` implement the core; `server.py` exposes it through Flask. Empty directories contain `.gitkeep` placeholders so Git preserves the structure.
@@ -116,17 +117,25 @@ occurrences; only incorrect guesses consume one of six lives.
 through this method rather than returning the object's internal attributes.
 Neither module imports Flask. Phase 2 tests exercise these behaviors independently of a web server.
 
-## Run the API locally
+## Play locally
 
 ```powershell
 .\.venv\Scripts\python.exe server.py
 ```
 
-The development API listens on `http://127.0.0.1:5000` with debug disabled.
+Open `http://127.0.0.1:5000` in a browser. Select a difficulty and click New game.
+Guess using the letter buttons or your keyboard. Used letters and finished games
+disable guessing; New game starts another round without a page reload.
+
+If a guess response is lost, use Sync game to retrieve the server's actual state
+before continuing. A missing game prompts you to start another. Refreshing the
+page currently returns to the initial screen rather than restoring a game.
+
+The development server listens on loopback with debug disabled.
 Use `POST /api/games`, `GET /api/games/{game_id}`, and
 `POST /api/games/{game_id}/guess`. See `API.md` for JSON examples, validation,
-status codes, and PowerShell requests. The root `/` returns JSON 404 because the
-browser interface is Phase 4 work.
+status codes, and PowerShell requests. The root `/` serves the browser page;
+`/static/` serves only frontend assets, not word lists or source modules.
 
 Games are in memory and disappear on restart. Each process has separate storage;
 a lock protects concurrent requests within one process. Use one production worker
@@ -134,7 +143,10 @@ until shared storage is added. There is no automatic game expiration or login.
 
 ## Planned deployment
 
-Render deployment is planned for Phase 6. Production configuration and the deployed HTTPS URL will be documented after implementation and verification. `Dockerfile.test` is for repeatable tests, not production hosting.
+Phase 6 will deploy from this GitHub repository to a host capable of running Flask
+(Render is the assignment's suggested option). Production configuration and the
+public HTTPS URL will be documented then. `Dockerfile.test` is for repeatable
+tests, not production hosting. No deployment was performed in Phase 4.
 
 ## Development workflow
 

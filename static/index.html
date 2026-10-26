@@ -1,0 +1,165 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta
+      name="description"
+      content="A fresh take on Hangman. Pick a difficulty, guess a letter, and make your six chances count."
+    />
+    <title>Hangman — Make every letter count</title>
+    <link
+      rel="icon"
+      href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 48 48'%3E%3Crect width='48' height='48' rx='12' fill='%231c3d32'/%3E%3Ctext x='24' y='34' text-anchor='middle' font-size='32' fill='%23d4ef9f'%3EH%3C/text%3E%3C/svg%3E"
+    />
+    <link rel="stylesheet" href="/static/style.css" />
+    <script src="/static/app.js" defer></script>
+  </head>
+  <body>
+    <main class="shell">
+      <header class="masthead">
+        <a class="brand" href="/" aria-label="Hangman home"
+          ><span class="brand-mark" aria-hidden="true">H<span>_</span></span
+          ><span>THE WORD ROOM</span></a
+        >
+        <span class="edition">A little thinking. A little luck.</span>
+      </header>
+
+      <section class="intro" aria-labelledby="page-title">
+        <div>
+          <p class="eyebrow">THE CLASSIC WORD GAME</p>
+          <h1 id="page-title">Hangman<span class="title-dot">.</span></h1>
+          <p class="subtitle">
+            One word. Six chances. Make every letter count.
+          </p>
+        </div>
+        <div class="rules-note">
+          <span aria-hidden="true">✳</span>
+          <p>Find the word before<br />the drawing is complete.</p>
+        </div>
+      </section>
+
+      <section class="game-card" aria-label="Hangman game">
+        <div class="toolbar">
+          <div class="difficulty-control">
+            <label for="difficulty">CHOOSE YOUR CHALLENGE</label
+            ><select id="difficulty">
+              <option value="easy">Easy · Everyday words</option>
+              <option value="medium">Medium · A little trickier</option>
+              <option value="hard">Hard · Think outside the box</option>
+            </select>
+          </div>
+          <div class="toolbar-actions">
+            <button id="sync-game" class="secondary-button" hidden>
+              Sync game</button
+            ><button id="new-game" class="primary-button">
+              <span aria-hidden="true">↗</span> New game
+            </button>
+          </div>
+        </div>
+
+        <div class="board">
+          <section
+            class="drawing-panel"
+            aria-label="Drawing and remaining chances"
+          >
+            <div class="panel-top">
+              <span class="eyebrow">THE SKETCHBOOK</span
+              ><span id="difficulty-badge" class="badge">READY TO PLAY</span>
+            </div>
+            <svg
+              id="hangman"
+              class="hangman"
+              viewBox="0 0 300 265"
+              role="img"
+              aria-label="Hangman drawing: 0 of 6 incorrect guesses"
+            >
+              <path class="ground" d="M38 244 H258" />
+              <g class="gallows">
+                <path d="M78 243 V31 H190 V62" />
+                <path d="M78 68 L115 31" />
+              </g>
+              <g class="figure">
+                <circle data-part="1" cx="190" cy="85" r="23" hidden />
+                <path data-part="2" d="M190 108 V172" hidden />
+                <path data-part="3" d="M190 123 L155 149" hidden />
+                <path data-part="4" d="M190 123 L225 149" hidden />
+                <path data-part="5" d="M190 172 L160 215" hidden />
+                <path data-part="6" d="M190 172 L220 215" hidden />
+              </g>
+            </svg>
+            <div class="chance-summary">
+              <span
+                ><strong id="remaining">6</strong>
+                <span id="chance-label">chances remaining</span></span
+              >
+              <div id="lives" class="lives" aria-hidden="true">
+                <i></i><i></i><i></i><i></i><i></i><i></i>
+              </div>
+            </div>
+            <p class="drawing-caption">
+              Every miss adds a line. Every letter is a possibility.
+            </p>
+          </section>
+
+          <section class="play-panel" aria-label="Word and letter controls">
+            <div class="word-header">
+              <span class="eyebrow">THE MYSTERY WORD</span
+              ><span id="word-length" class="muted">Waiting for a word</span>
+            </div>
+            <div id="word" class="word" aria-label="No game started">
+              <span class="word-placeholder">Your next word awaits.</span>
+            </div>
+            <div
+              id="message"
+              class="message"
+              role="status"
+              aria-live="polite"
+              aria-atomic="true"
+            >
+              <strong id="message-title">Ready when you are.</strong
+              ><span id="message-detail"
+                >Choose a challenge, then start a new game.</span
+              >
+            </div>
+            <div class="keyboard-heading">
+              <span class="eyebrow">PICK A LETTER</span
+              ><span class="keyboard-hint"
+                >or use your keyboard <span aria-hidden="true">⌨</span></span
+              >
+            </div>
+            <div
+              id="keyboard"
+              class="keyboard"
+              role="group"
+              aria-label="Letter guesses"
+            ></div>
+            <div class="guess-summary">
+              <span class="eyebrow">LETTERS TRIED</span>
+              <p id="guessed">None yet — a clean slate.</p>
+            </div>
+            <div class="wrong-summary">
+              <span class="eyebrow">MISSES</span>
+              <p id="incorrect">None yet.</p>
+            </div>
+            <div class="legend">
+              <span><i class="legend-dot correct"></i> Correct</span
+              ><span><i class="legend-dot incorrect"></i> Incorrect</span
+              ><span><i class="legend-dot available"></i> Still to try</span>
+            </div>
+          </section>
+        </div>
+      </section>
+      <footer>
+        <span>A small word break, whenever you need one.</span
+        ><span>26 letters. Endless possibilities.</span>
+      </footer>
+      <noscript
+        ><p class="noscript">
+          Enable JavaScript to play. Your browser sends guesses to the Hangman
+          server.
+        </p></noscript
+      >
+    </main>
+  </body>
+</html>

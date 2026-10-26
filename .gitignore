@@ -14,6 +14,8 @@ htmlcov/
 .local-tmp/
 tmp/
 *.log
+.playwright-cli/
+output/playwright/
 
 # Editor and operating-system files
 .vscode/

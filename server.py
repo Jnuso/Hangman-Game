@@ -88,8 +88,12 @@ def create_app(word_manager: WordManager | None = None) -> Flask:
     def guess_letter(game_id):
         # Unknown IDs are reported before request-body errors for this route.
         with lock:
+            find_game(game_id)
+        # Reading client input can wait on the network; leave other games usable.
+        body = read_body("letter")
+        with lock:
+            # Check current state after the upload, which may overlap other guesses.
             game = find_game(game_id)
-            body = read_body("letter")
             try:
                 game.guess(body["letter"])
             except InvalidGuessError as error:

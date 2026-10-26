@@ -6,7 +6,7 @@ Repository: https://github.com/Jnuso/Hangman-Game
 
 ## Current status
 
-Phases 1–4 are complete. Phase 5 automated checks now pass: 77 Python tests,
+Phases 1–4 are complete. Phase 5 automated checks now pass: 81 Python tests,
 43 browser walkthrough assertions, 22 browser edge scenarios, and 9 browser
 integration scenarios. All 120 bundled words have controlled API win/loss coverage.
 The playable interface supports all difficulties, mouse/keyboard guesses, an SVG
@@ -68,11 +68,13 @@ The project uses Python's built-in `unittest`; it requires no additional test fr
 .\.venv\Scripts\python.exe -m unittest discover -s tests -p 'test_*.py' -v
 ```
 
-The suite currently contains **77 Python test methods**, with additional input combinations
+The suite currently contains **81 Python test methods**, with additional input combinations
 covered by `subTest`. All passed in a Python 3.14 Linux Docker container. See
 `TESTING.md` for the requirement coverage and Docker reproduction command. API
 tests cover request validation, status codes, game isolation, answer disclosure,
 concurrent duplicate guesses, complete games, and HTML/CSS/JavaScript delivery.
+Slow-upload regressions also verify that request-body reads leave other games
+usable and delayed guesses are checked against the latest game state.
 There are also **43 browser walkthrough assertions, 22 edge scenarios, and 9 integration scenarios**; see `tests/browser/README.md` for
 reproduction instructions and verification limits.
 

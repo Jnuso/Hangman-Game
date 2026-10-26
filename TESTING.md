@@ -1,8 +1,8 @@
 # Test cases and results
 
-Current result: **77 passing Python test methods** (18 engine, 17 word management,
-32 API/live HTTP, 6 browser-asset delivery, 4 integration), plus **43 browser
-walkthrough assertions, 22 browser edge scenarios, and 9 browser integration
+Current result: **81 passing Python test methods** (18 engine, 17 word management,
+36 API/live HTTP including slow uploads, 6 browser-asset delivery, 4 integration),
+plus **43 browser walkthrough assertions, 22 browser edge scenarios, and 9 browser integration
 scenarios**. Manual Phase 5 checks remain pending in `MANUAL_TESTING.md`.
 Earlier counts below describe the runs at those milestones.
 
@@ -232,3 +232,33 @@ All three browser suites passed sequentially in one Chrome session (43/22/9),
 with no page runtime errors. HTML/CSS/JS manual inspection, the required Chrome
 Developer Tools request/response walkthrough, native fresh installation, and
 the user's own gameplay review remain explicitly pending.
+
+## Phase 5 audit fix — Slow request uploads
+
+Added four methods in `tests/test_slow_uploads.py`. Three failed against the
+original endpoint because a paused request body held the shared game lock. The
+unknown-ID test passed before the fix and preserves that existing behavior.
+After shortening the lock scope, the full Docker suite passed **81 methods with
+no failures or skips** (exit code 0).
+
+- While one guess upload remains paused, GET for that game and another game,
+  another game's valid guess, and new-game creation all complete. Releasing the
+  upload then records its guess exactly once; the other games retain their state.
+- A winning guess can finish the same game while a final-miss upload waits. The
+  delayed miss then receives `409 game_finished`, leaving the win unchanged.
+- A delayed duplicate is rejected with `409 duplicate_guess` after another
+  request records the normalized letter; only one life is consumed.
+- An unknown game receives JSON 404 without consuming any request-body bytes.
+
+The test body uses Events to signal when Flask starts reading and to release
+the read. Completion is asserted before release; timeouts bound failures rather
+than establish ordering. Each thread has its own Flask client. A finally block
+releases the body before executor shutdown, including when an assertion fails.
+These are controlled WSGI-input tests, not a proxy/server load benchmark.
+
+The production change keeps the initial ID lookup, then parses JSON outside the
+shared lock, then reacquires it for a fresh lookup, game update, and response
+snapshot. Existing duplicate/final-life concurrency and validation tests also pass.
+The browser counts above come from the preceding Chrome rerun; browser scripts
+were not rerun for this backend change. The deferred manual Docker installation
+and startup review remains unchecked.

@@ -105,8 +105,12 @@ Invoke-RestMethod -Uri "$base/api/games/$($game.game_id)/guess" -Method Post -Co
 ## Storage and scope
 
 Each application instance has its own dictionary of games. A lock protects
-reads and updates within a process, including simultaneous guesses. A restart
-clears games, and multiple processes do not share storage: use a single worker
+reads and updates within a process, including simultaneous guesses. Request
+bodies are read outside that lock so a slow upload does not block other game
+operations. Unknown IDs are rejected before reading the body; after reading it,
+the server checks the game again and applies the guess against its current state
+under the lock. A restart clears games, and multiple processes do not share
+storage: use a single worker
 until shared storage is introduced. Games currently remain in memory until the
 process restarts; expiration and persistence are not implemented.
 

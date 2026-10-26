@@ -101,19 +101,25 @@ Completion: a player can complete and restart games through the browser, with th
 
 ## Phase 5 — Integration testing and local verification
 
-Automated portion verified: 77 Python tests and browser suites with 43 walkthrough
+Automated portion verified: 81 Python tests and browser suites with 43 walkthrough
 assertions, 22 edge scenarios, and 9 integration scenarios passed. Checked items
-below have automated evidence; manual gameplay and Developer Tools review are
-still pending in `MANUAL_TESTING.md`. Phase 5 is not complete yet.
+below have automated evidence or reviewed manual screenshots. The user confirmed
+all seven manual Gameplay and usability checks complete on 2026-10-26. Developer
+Tools creation/guess screenshots are saved and verified. The user's request/response
+explanation and setup/recovery review remain pending in `MANUAL_TESTING.md`.
+The user deferred the manual clean-install/startup check until later and selected
+Docker for that check; it remains unchecked.
+Phase 5 is not complete yet.
 
 - [x] Run the full engine, word-management, and API test suite and resolve failures.
+- [x] Fix the audit's slow-upload lock issue and verify request availability, delayed duplicate/finished-game rejection, and unknown-ID precedence with regression tests.
 - [x] Test actual browser flows for each difficulty, correct/incorrect guesses, a win, a loss, and restarting after completion.
 - [x] Verify invalid and repeated requests do not consume lives or corrupt state.
 - [x] Verify independent games do not affect each other.
 - [x] Inspect browser responses and assets to confirm the active answer is not exposed.
-- [ ] Use Chrome Developer Tools to inspect at least one guess request and its JSON response.
+- [x] Use Chrome Developer Tools to inspect at least one guess request and its JSON response.
 - [ ] Record the request → Flask → JSON → browser-update sequence for the report and demonstration.
-- [ ] Verify installation and startup from the documented dependency/setup instructions.
+- [ ] Manually verify installation and startup from the documented Docker instructions (deferred until later at the user's request).
 - [x] Document actual automated results and known limitations; commit/push verified test additions. Add manual evidence after the pending review.
 
 Completion: required flows and failure cases are verified locally with reproducible evidence.

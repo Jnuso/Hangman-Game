@@ -255,3 +255,37 @@ process startup in Docker does not claim fresh native dependency installation.
 The integration browser assertions collect a single DOM snapshot per response
 instead of issuing thousands of per-button browser round trips. The optimized
 script was reverified with the same nine passing scenarios and 51 comparisons.
+
+## Phase 5 audit fix — Request bodies outside the shared lock
+
+The code audit reproduced an availability bug: the guess endpoint held the
+application-wide game lock while `request.get_json()` waited for client bytes.
+Even a small stalled upload could therefore block state reads and guesses for
+other games. The user reviewed the explanation and authorized the fix.
+
+Added four focused tests using a paused WSGI input stream and explicit Events.
+Before changing the endpoint, three tests failed because other requests could
+not complete while the body was paused; the unknown-ID/no-body-read test passed.
+The tests always release the paused body in finally before joining worker
+threads, and use an independent Flask client per thread.
+
+Changed the endpoint to check the ID briefly under the lock, parse the request
+outside it, then reacquire the lock and retrieve the game again before applying
+the guess and building its response. This preserves 404 precedence and ensures
+delayed requests use current duplicate/finished-game state. The tests cover
+unblocked reads, another game's guess, creation, a delayed final miss after a win,
+a delayed duplicate, and unknown-ID rejection without reading the body.
+
+The full Python 3.14 Docker suite passed **81 methods, no skips, exit code 0**.
+An independent review of the test design found no actionable concerns. The
+earlier Chrome rerun passed 43 walkthrough checks, 22 edge scenarios, and nine
+integration scenarios; browsers were not rerun for this backend change.
+Manual gameplay and supplied Developer Tools screenshots are now recorded in
+`MANUAL_TESTING.md`, with six evidence images saved in the repository. The user's
+own request/response explanation and recovery checks remain pending; the manual
+clean-install/startup check is explicitly deferred until later in Docker.
+
+A separate coding-workers backend review was attempted but stopped at a provider
+rate limit (HTTP 429), returning no usable findings or test verification. No worker
+artifacts were integrated; the 81-test result above comes from the direct Docker
+run against this repository.

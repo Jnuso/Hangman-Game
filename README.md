@@ -6,7 +6,7 @@ Repository: https://github.com/Jnuso/Hangman-Game
 
 ## Current status
 
-Phases 1–4 are complete: setup, game engine, word management, Flask API, and a playable browser interface. All 70 Python tests pass in Docker, and 43 real-browser assertions passed in Chrome. The interface supports all difficulties, mouse/keyboard guesses, an SVG drawing, restart, and network-error recovery. Public deployment remains Phase 6 work.
+Phases 1–4 are complete: setup, game engine, word management, Flask API, and a playable browser interface. All 73 Python tests pass in Docker, alongside 43 browser walkthrough assertions and 22 browser edge-case scenarios in Chrome. The interface supports all difficulties, mouse/keyboard guesses, an SVG drawing, restart, and network-error recovery. Public deployment remains Phase 6 work.
 
 See `TODO.md` for the accepted phased plan. Implement and verify one phase at a time.
 
@@ -63,12 +63,12 @@ The project uses Python's built-in `unittest`; it requires no additional test fr
 .\.venv\Scripts\python.exe -m unittest discover -s tests -p 'test_*.py' -v
 ```
 
-The suite currently contains **70 Python test methods**, with additional input combinations
+The suite currently contains **73 Python test methods**, with additional input combinations
 covered by `subTest`. All passed in a Python 3.14 Linux Docker container. See
 `TESTING.md` for the requirement coverage and Docker reproduction command. API
 tests cover request validation, status codes, game isolation, answer disclosure,
 concurrent duplicate guesses, complete games, and HTML/CSS/JavaScript delivery.
-There are also **43 browser assertions**; see `tests/browser/README.md` for
+There are also **43 browser walkthrough assertions and 22 browser edge-case scenarios**; see `tests/browser/README.md` for
 reproduction instructions and verification limits.
 
 ## Project layout
@@ -130,6 +130,11 @@ disable guessing; New game starts another round without a page reload.
 If a guess response is lost, use Sync game to retrieve the server's actual state
 before continuing. A missing game prompts you to start another. Refreshing the
 page currently returns to the initial screen rather than restoring a game.
+
+Malformed responses cannot replace the current game. Failed creation leaves an
+existing game available, while uncertain guesses require sync. Composition,
+modified, repeated, and already-handled keyboard events are ignored. The browser
+validates response structure and game identity; Flask still owns game decisions.
 
 The development server listens on loopback with debug disabled.
 Use `POST /api/games`, `GET /api/games/{game_id}`, and

@@ -192,3 +192,37 @@ public hosting was performed. Remaining limits include refresh not restoring the
 active game, no physical mobile or other-engine coverage, no screen-reader audit,
 and no independent elapsed-time assertion for the full fetch-timeout path. Phase 5
 will perform the broader local audit and demonstration-oriented API inspection.
+
+### Phase 4 follow-up — Edge-case review
+
+The user requested stronger edge coverage before the walkthrough. Wrote five
+targeted regressions first; all failed against the existing UI. Two malformed
+success-response cases cleared or crashed game state; a creation-endpoint 404
+discarded a current game; composition input submitted a guess; and a keyboard
+event targeted at document caused `target.closest is not a function`.
+
+Added response-envelope validation before state assignment, including expected
+game identity on guess/sync. This validates renderer inputs without implementing
+game rules. HTTP error parsing retains status even for HTML bodies. Missing-game
+reset is scoped to guess/sync requests, preserving existing games when creation
+fails. Keyboard handling now ignores composition/default-prevented events and
+checks Element targets before using DOM element methods.
+
+Expanded to 22 passing browser edge scenarios, including malformed fields,
+missing terminal answers, wrong game IDs, lost/malformed accepted-guess responses,
+error-message HTML escaping, sync retries/404, another client's win, editable and
+modified-key input, and late responses following timeout recovery. The actual
+15-second application timer is exercised using Playwright virtual time for both
+Sync and New game recovery. No page runtime errors remained in the final runs.
+
+The original browser walkthrough also revealed test pollution: its anonymous
+response listeners stayed attached and tried to parse the edge suite's deliberate
+null responses. Replaced them with named listeners and finally cleanup. Both
+browser suites then passed sequentially: 43 original assertions plus 22 edge
+scenarios. A formatting-only trailing semicolon in the CLI function expression
+was corrected before final execution.
+
+Added three asset-delivery edge tests. Full Docker suite passed **73 Python test
+methods**, and Node syntax checks passed for the application and browser scripts.
+Updated README, testing instructions, and checklist with current evidence. No
+deployment work or Phase 5 completion was claimed in this follow-up.

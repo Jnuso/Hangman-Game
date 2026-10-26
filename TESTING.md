@@ -1,7 +1,8 @@
 # Test cases and results
 
-Current result: **70 passing Python test methods** (18 engine, 17 word management,
-32 API/live HTTP, 3 browser-asset delivery), plus **43 real-browser assertions**.
+Current result: **73 passing Python test methods** (18 engine, 17 word management,
+32 API/live HTTP, 6 browser-asset delivery), plus **43 browser walkthrough
+assertions and 22 browser edge-case scenarios**.
 Earlier counts below describe the runs at those milestones.
 
 The suite uses standard-library `unittest`, known answers for engine scenarios,
@@ -164,3 +165,37 @@ route interception is limited to deliberate delay/error simulations.
 Browser UI works locally; cloud deployment, physical-device testing, other browser
 engines, screen-reader certification, and the Phase 5 demonstration-oriented
 Developer Tools review remain outstanding.
+
+## Phase 4 follow-up — Regressions found and fixed
+
+The first five targeted browser regressions all failed against the original
+Phase 4 frontend. They reproduced malformed successful responses clearing or
+crashing state, creation-endpoint 404 discarding a valid existing game,
+composition keystrokes submitting guesses, and document-targeted keyboard events
+causing a runtime error. After fixes, all five passed.
+
+The final expanded run passed **22 browser edge scenarios**, preserved in
+`tests/browser/edge_cases.js`. Response-envelope validation now rejects bad types,
+unexpected statuses, active answer fields, missing terminal answers, and responses
+with a different game ID before assignment. It does not compute guess outcomes.
+HTTP errors preserve status even when the error body is HTML. New-game failures
+preserve existing state; only a missing game on guess/sync clears that game.
+Keyboard handling ignores composition, already-handled, modified, repeated, and
+non-element-target events.
+
+Additional passing scenarios cover malformed accepted-guess responses followed
+by sync, escaped error-message markup, repeated sync errors followed by missing
+game/restart, external-client completion, editable focus, and timeout recovery.
+Playwright's virtual clock advances the actual 15-second AbortController timer;
+both sync and New game recovery ignore a late response after timeout. This tests
+timer behavior without a real-time 15-second wait.
+
+The original 43-check walkthrough also passed after the fixes. Its listeners and
+route handlers are now removed in finally: lingering response listeners had
+interfered with malformed-response scenarios when suites shared a page.
+
+Added three Python asset tests for HEAD semantics, missing-asset JSON 404s, and
+JSON 405 responses/Allow headers on page and static routes. Full Docker suite:
+**73 tests passed, exit code 0**. JavaScript syntax checks passed. Expected injected
+resource errors are distinct from runtime errors; final browser runs had no page
+runtime errors. Cross-browser, physical-device, and screen-reader limits remain.

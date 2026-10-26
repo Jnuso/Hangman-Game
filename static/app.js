@@ -118,7 +118,44 @@
     }
   }
 
-  async function request(path, body) {
+  function validateState(data, expectedId) {
+    // Validate the response envelope before replacing usable state. Game rules
+    // still belong to Flask; these checks protect the renderer's assumptions.
+    const letters = (value) =>
+      Array.isArray(value) &&
+      value.every(
+        (letter) => typeof letter === "string" && /^[a-z]$/.test(letter),
+      );
+    const valid =
+      data !== null &&
+      typeof data === "object" &&
+      !Array.isArray(data) &&
+      typeof data.game_id === "string" &&
+      /^[a-f0-9]{32}$/.test(data.game_id) &&
+      (expectedId === undefined || data.game_id === expectedId) &&
+      ["easy", "medium", "hard"].includes(data.difficulty) &&
+      typeof data.pattern === "string" &&
+      /^[a-z_](?: [a-z_])*$/.test(data.pattern) &&
+      letters(data.guessed_letters) &&
+      letters(data.incorrect_letters) &&
+      Number.isInteger(data.remaining_guesses) &&
+      data.remaining_guesses >= 0 &&
+      data.remaining_guesses <= 6 &&
+      ["playing", "won", "lost"].includes(data.status) &&
+      (data.status === "playing"
+        ? !Object.hasOwn(data, "word")
+        : typeof data.word === "string" && /^[a-z]+$/.test(data.word));
+    if (!valid) {
+      const error = new Error(
+        "The server returned an unexpected game response. Try again.",
+      );
+      error.kind = "invalid_response";
+      throw error;
+    }
+    return data;
+  }
+
+  async function request(path, body, expectedId) {
     const controller = new AbortController();
     const timeout = setTimeout(() => controller.abort(), 15000);
     try {
@@ -130,22 +167,32 @@
         signal: controller.signal,
         cache: "no-store",
       });
-      const data = await response.json();
+      let data;
+      try {
+        data = await response.json();
+      } catch (error) {
+        if (response.ok) {
+          if (error.name === "AbortError") throw error;
+          data = null;
+        }
+      }
       if (!response.ok) {
         const error = new Error(
-          data.error?.message || "The request could not be completed.",
+          typeof data?.error?.message === "string"
+            ? data.error.message
+            : "The request could not be completed.",
         );
         error.status = response.status;
         throw error;
       }
-      return data;
+      return validateState(data, expectedId);
     } finally {
       clearTimeout(timeout);
     }
   }
 
   function showRequestError(error, isGuess) {
-    if (error.status === 404 && game) {
+    if (isGuess && error.status === 404 && game) {
       game = null;
       needsSync = false;
       message(
@@ -155,9 +202,12 @@
       );
     } else {
       if (isGuess && game) needsSync = true;
-      const detail = error.status
-        ? error.message
-        : "Check your connection and try again.";
+      const detail =
+        error.name === "AbortError"
+          ? "The request timed out. Check your connection and try again."
+          : error.status || error.kind === "invalid_response"
+            ? error.message
+            : "Check your connection and try again.";
       message(
         isGuess ? "Let's check where we left off." : "Couldn't reach the game.",
         isGuess
@@ -201,7 +251,11 @@
     message(`Trying ${letter.toUpperCase()}…`, "Checking your letter.");
     render();
     try {
-      game = await request(`/api/games/${game.game_id}/guess`, { letter });
+      game = await request(
+        `/api/games/${game.game_id}/guess`,
+        { letter },
+        game.game_id,
+      );
       showGameMessage();
     } catch (error) {
       showRequestError(error, true);
@@ -217,7 +271,11 @@
     message("Checking your game…", "Getting the latest state from the server.");
     render();
     try {
-      game = await request(`/api/games/${game.game_id}`);
+      game = await request(
+        `/api/games/${game.game_id}`,
+        undefined,
+        game.game_id,
+      );
       needsSync = false;
       showGameMessage();
     } catch (error) {
@@ -234,9 +292,12 @@
     const target = event.target;
     if (
       event.repeat ||
+      event.isComposing ||
+      event.defaultPrevented ||
       event.ctrlKey ||
       event.metaKey ||
       event.altKey ||
+      !(target instanceof Element) ||
       target.isContentEditable ||
       target.closest("input,select,textarea")
     )

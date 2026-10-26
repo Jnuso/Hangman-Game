@@ -3,17 +3,21 @@ async (page) => {
   const runtimeErrors = [];
   const apiChecks = [];
   const guesses = [];
-  page.on('pageerror', (error) => runtimeErrors.push(error.message));
-  page.on('request', (request) => {
+  const onError = (error) => runtimeErrors.push(error.message);
+  const onRequest = (request) => {
     if (request.method() === 'POST' && request.url().endsWith('/guess')) guesses.push(request.postDataJSON());
-  });
-  page.on('response', (response) => {
+  };
+  const onResponse = (response) => {
     if (response.url().includes('/api/games') && [200,201].includes(response.status())) {
       apiChecks.push(response.json().then((data) => {
         if (data.status === 'playing' && Object.hasOwn(data, 'word')) throw new Error('Active answer exposed');
       }));
     }
-  });
+  };
+  page.on('pageerror', onError);
+  page.on('request', onRequest);
+  page.on('response', onResponse);
+  try {
   const check = (condition, label) => { if (!condition) throw new Error(label); checks.push(label); };
   const idle = () => page.waitForFunction(() => !document.querySelector('#new-game').disabled);
   const start = async (level = 'easy') => {
@@ -131,4 +135,10 @@ async (page) => {
   check(runtimeErrors.length === 0, 'no browser JavaScript runtime errors');
   check(apiChecks.length > 20, 'active API responses inspected for answer omission');
   return {passed:checks.length,checks,apiResponsesInspected:apiChecks.length,guessRequests:guesses.length,runtimeErrors};
+  } finally {
+    page.off('pageerror', onError);
+    page.off('request', onRequest);
+    page.off('response', onResponse);
+    await page.unrouteAll({behavior:'ignoreErrors'});
+  }
 }

@@ -6,6 +6,10 @@ responsive-layout conditions. `fixture_server.py` supplies controlled words for
 repeatable win/loss checks: easy `apple`, medium `guitar`, hard `rhythm`. These
 fixtures are only for QA; normal play uses the project's real word lists.
 
+`edge_cases.js` adds **22 scenarios** for malformed responses, keyboard/input
+boundaries, failed sync, remote completion, timeout, and late-response recovery.
+Both suites clean up listeners/routes so they can run sequentially in one page.
+
 ## Reproduce
 
 Start Docker Desktop, build the dependency image using the command in
@@ -21,6 +25,7 @@ In another terminal from the repository root, with Node/npm installed:
 New-Item -ItemType Directory -Path output/playwright -Force | Out-Null
 npx --yes --package @playwright/cli playwright-cli -s=hangman-qa open http://127.0.0.1:5055 --headed
 npx --yes --package @playwright/cli playwright-cli -s=hangman-qa --raw run-code --filename tests/browser/check.js
+npx --yes --package @playwright/cli playwright-cli -s=hangman-qa --raw run-code --filename tests/browser/edge_cases.js
 npx --yes --package @playwright/cli playwright-cli -s=hangman-qa close
 ```
 
@@ -54,5 +59,27 @@ runtime errors. The run returns JSON assertion results and saves desktop/mobile
 screenshots under ignored `output/playwright/`.
 
 This is Chromium desktop automation with resized viewports, not physical mobile
-device, screen-reader, or cross-browser certification. Request timeout handling
-is implemented but its full 15-second elapsed-time path is not separately tested.
+device, screen-reader, or cross-browser certification. Timeout scenarios advance
+the real application timer by 15,001 milliseconds using Playwright's virtual
+clock; they do not depend on a 15-second wall-clock sleep. The CLI scripts must
+remain function expressions without a trailing semicolon, as required by run-code.
+The timer approach follows the [official Playwright Clock documentation](https://playwright.dev/docs/clock).
+
+## Edge-suite coverage
+
+- Null/empty/malformed success state preserves the previous game and shows an error.
+- Incorrect game IDs and terminal responses without answers cannot replace state.
+- A malformed response after an accepted guess is reconciled by GET, not a retry.
+- Creation endpoint 404 preserves an existing game; guess/sync 404 resets it.
+- HTML gateway errors retain usable recovery controls and HTTP status handling.
+- Error-message markup renders literally rather than creating HTML or executing.
+- Failed sync stays retryable and keeps guessing disabled; restart remains usable.
+- Another client's completed game becomes a terminal UI state after synchronization.
+- Composition, modified/repeated/default-prevented keys, editable focus, and
+  non-element event targets cannot trigger unintended guesses or runtime errors.
+- A timed-out accepted guess can recover by sync or New game; late responses
+  cannot overwrite the recovered state.
+
+The edge suite returns a JSON summary on success and throws a detailed failure
+report when a scenario fails. Inspect CLI output as well as process status:
+tool-level errors can be reported in the CLI output independently of shell status.

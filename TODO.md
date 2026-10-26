@@ -79,7 +79,8 @@ Completion: a complete game can be played through HTTP requests, with no browser
 
 ## Phase 4 — Browser interface
 
-Verified: 70 Python tests and 43 Chrome browser assertions passed. Desktop and
+Verified: 73 Python tests, 43 Chrome browser assertions, and 22 browser edge-case
+scenarios passed. Desktop and
 mobile screenshots inspected; no horizontal overflow at 375px or 320px.
 
 - [x] Serve the HTML page and CSS/JavaScript assets from Flask.

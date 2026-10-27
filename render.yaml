@@ -1,0 +1,17 @@
+services:
+  - type: web
+    name: jnuso-hangman-game
+    runtime: python
+    repo: https://github.com/Jnuso/Hangman-Game
+    branch: main
+    plan: free
+    region: virginia
+    numInstances: 1
+    buildCommand: python -m pip install -r requirements-production.txt && python -m pip check
+    startCommand: gunicorn --config gunicorn.conf.py server:app
+    autoDeployTrigger: 'off'
+    envVars:
+      - key: FLASK_DEBUG
+        value: "0"
+      - key: PYTHONUNBUFFERED
+        value: "1"

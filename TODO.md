@@ -134,9 +134,9 @@ Completion: required flows and failure cases are verified locally with reproduci
 Deploy from the user's GitHub repository to a Flask-capable host. Public hosting
 is intentionally deferred until this phase.
 
-- [ ] Prepare production dependencies and Render configuration (or document an equivalent host).
-- [ ] Configure a production startup command matching the application module and host-provided port, with debug disabled.
-- [ ] Use one worker if game storage remains in memory; document that process restarts clear active games.
+- [x] Prepare production dependencies and Render configuration (or document an equivalent host).
+- [x] Configure a production startup command matching the application module and host-provided port, with debug disabled.
+- [x] Use one worker if game storage remains in memory; document that process restarts clear active games.
 - [ ] Push deployment-ready code and deploy from the Hangman-Game GitHub repository.
 - [ ] Verify the public HTTPS URL serves the interface and all three required API endpoints.
 - [ ] Play a complete game and start another on the deployed app.

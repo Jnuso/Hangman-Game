@@ -1,0 +1,57 @@
+{
+  "local_date": "2026-10-26",
+  "python": "3.14.3",
+  "gunicorn": "26.2.0",
+  "packaging": "26.3",
+  "regression_suite": {
+    "passed": 81,
+    "skipped": 0,
+    "seconds": 4.805,
+    "environment": "Linux Docker, production dependencies, repository mounted read-only, network disabled"
+  },
+  "production_settings": {
+    "bind": "0.0.0.0:10017",
+    "workers": 1,
+    "worker_class": "gthread",
+    "threads": 4,
+    "reload": false,
+    "control_socket_disable": true,
+    "flask_debug": false,
+    "runtime_uid": 65534
+  },
+  "http_smoke": {
+    "base_url": "http://127.0.0.1:10017",
+    "requests_checked": 54,
+    "completed_rounds": [
+      {
+        "difficulty": "easy",
+        "status": "lost"
+      },
+      {
+        "difficulty": "medium",
+        "status": "lost"
+      },
+      {
+        "difficulty": "hard",
+        "status": "lost"
+      }
+    ],
+    "concurrent_duplicate_statuses": [
+      200,
+      409
+    ],
+    "restart_game_id": "828ed1ca645043a68aabc5019f1a6d9f",
+    "result": "passed"
+  },
+  "restart": {
+    "old_game_status": 404,
+    "new_game_status": 201,
+    "result": "passed"
+  },
+  "review": {
+    "status": "unavailable",
+    "reason": "coding-workers start_job returned invalid_project: Project must be a directory under CODING_AGENTS_ROOTS.",
+    "artifacts_applied": false
+  },
+  "public_deployment": "pending"
+}

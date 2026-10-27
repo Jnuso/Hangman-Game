@@ -3,13 +3,58 @@
 Current result: **81 passing Python test methods** (18 engine, 17 word management,
 36 API/live HTTP including slow uploads, 6 browser-asset delivery, 4 integration),
 plus **43 browser walkthrough assertions, 22 browser edge scenarios, and 9 browser integration
-scenarios**. Manual Phase 5 checks remain pending in `MANUAL_TESTING.md`.
+scenarios**. Manual Phase 5 checks and the user's approved explanation are complete
+in `MANUAL_TESTING.md`.
 Earlier counts below describe the runs at those milestones.
 
 The suite uses standard-library `unittest`, known answers for engine scenarios,
 and temporary directories for file-loading scenarios. Tests use public behavior;
 they do not inspect the engine's private word or history. The selection test
 patches `random.choice` to inspect normalized candidates at that boundary.
+
+## Phase 6 — Production server verification
+
+Verified on 2026-10-26 (local date), using the production image built from
+`Dockerfile.production`: Python 3.14.3, Gunicorn 26.2.0, packaging 26.3, and the
+existing pinned Flask dependencies. The image's dependency installation and
+`pip check` passed. Gunicorn imports `server:app` through `gunicorn.conf.py`.
+
+The full existing suite passed again with production dependencies: **81 tests,
+no skips, 4.805 seconds**, network disabled, repository mounted read-only. These
+tests still exercise the Flask/engine contracts; the separate smoke check below
+tests the actual Gunicorn process and copied runtime files.
+
+Gunicorn's resolved configuration and startup verified `0.0.0.0:10017` from a
+non-default `PORT`, one worker, four gthread threads, and no reload. A startup
+permission error from the optional admin control socket was reproduced under
+the non-root container account, then fixed by setting
+`control_socket_disable = True`. Corrected startup had no control-socket error.
+
+`scripts/check_deployment.py` passed **54 real HTTP requests** against that server:
+HTML/CSS/JavaScript delivery, blocked source/word paths, unknown IDs, invalid
+difficulty, all three game endpoints at every difficulty, invalid and repeated
+letters without mutation, no answer field during active play, a complete round
+at each difficulty, terminal answer disclosure, rejection after completion, and
+a fresh game. The random rounds in this run all ended in losses; the existing
+controlled tests separately cover wins. Two concurrent client guesses for the
+same letter returned 200 and 409, with the letter recorded once.
+
+Restarting only the temporary production container made the smoke check's old
+game ID return 404. Creation afterward returned 201 with fresh state. The app's
+debug flag was false, and the runtime container UID was 65534. Results are saved
+in `evidence/deployment/2026-10-26/local-verification.json`.
+
+Build the image and run the existing suite from PowerShell:
+
+```powershell
+docker build -f Dockerfile.production -t hangman-production .
+docker run --rm --network none --mount "type=bind,source=$($PWD.Path),target=/app,readonly" hangman-production python -m unittest discover -s tests -p 'test_*.py' -v
+```
+
+See README for running the HTTP smoke script against a running local container
+or public URL. Browser verification and public hosting remain pending until the
+actual Render deployment is available; local production success does not mark
+the cloud-verification checklist complete.
 
 ## Coverage
 

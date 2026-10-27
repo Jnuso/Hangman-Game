@@ -289,3 +289,48 @@ A separate coding-workers backend review was attempted but stopped at a provider
 rate limit (HTTP 429), returning no usable findings or test verification. No worker
 artifacts were integrated; the 81-test result above comes from the direct Docker
 run against this repository.
+
+## Phase 5 completion — Manual verification and explanation
+
+The user completed the offline/Sync and server-restart checks and supplied a
+clean Docker build, dependency check, startup log, and browser guesses at every
+difficulty. They drafted five answers explaining the request/Flask/JSON/browser
+sequence, reviewed technical clarifications, and approved the final version.
+The explanation and supplied evidence were committed and pushed in `49a8235`.
+Phase 5 is complete; the earlier pending statuses above describe earlier runs.
+
+## Phase 6 — Production preparation
+
+The user approved beginning deployment from GitHub to Render and confirmed
+Jack's workspace after connecting the Render plugin. The intended service uses
+the Free plan, one instance, and manual deploys. No paid service or database is
+needed. The public deployment and browser verification are still pending.
+
+Added `.python-version` (3.14.3), a production requirements file (existing Flask
+pins, Gunicorn 26.2.0, packaging 26.3), a shared Gunicorn configuration, a Render
+Blueprint, a non-root production-check image, and a reusable real-HTTP smoke
+script. Normal Windows development keeps its existing requirements file.
+One worker preserves the in-memory game store; four threads allow overlapping
+requests while the existing lock serializes game-state updates. `PORT` controls
+the listening port, debug/reload stay off, and logs go to stdout/stderr.
+
+Consulted official Render Blueprint/Python-version documentation, Gunicorn
+settings, and PyPI release metadata. Validated the Blueprint against Render's
+official JSON schema. The production image installed cleanly and passed
+`pip check`; all 81 existing Python tests passed in Docker without skips.
+
+The non-root startup check exposed Gunicorn's optional admin socket attempting
+to create files under `/nonexistent`. Disabled that unused socket in the shared
+configuration, rebuilt, and verified clean startup. The first smoke run also
+exposed a logging mistake in the new checker (`Request.method` instead of
+`Request.get_method()`); corrected it before the successful run.
+
+The real Gunicorn server passed 54 HTTP requests, including complete rounds at
+all three difficulties, validation, answer protection, and concurrent duplicate
+guesses. A restart probe confirmed old-ID 404, fresh-game 201, debug false, and
+UID 65534. Details and reproduction steps are in TESTING.md and README.
+
+The coding-workers independent review was attempted with this project path but
+returned `invalid_project` because it is outside that backend's configured
+`CODING_AGENTS_ROOTS`. No findings, test verification, or artifacts came from that
+worker. Direct Docker verification supplies the test evidence above.

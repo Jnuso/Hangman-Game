@@ -1,8 +1,8 @@
 # Hangman Game — CSE 4095 Assignment 14
 
-A browser-based Hangman game planned with an independent Python game engine, a Flask REST API, and an HTML/CSS/JavaScript interface.
+A browser-based Hangman game with an independent Python game engine, a Flask REST API, and an HTML/CSS/JavaScript interface.
 
-Repository: https://github.com/Jnuso/Hangman-Game
+Repository: [Jnuso/Hangman-Game](https://github.com/Jnuso/Hangman-Game).
 
 ## Current status
 
@@ -17,15 +17,45 @@ checks plus 56 Chrome assertions, with desktop/mobile screenshots reviewed.
 
 Play online: **[jnuso-hangman-game.onrender.com](https://jnuso-hangman-game.onrender.com)**.
 
-See `TODO.md` for the accepted phased plan. Implement and verify one phase at a time.
+See [TODO.md](TODO.md) for the phased plan. Phase 7's repository and README audit
+is complete; the final report, demonstration recording, and submission checks
+remain pending.
 
 ## Requirements and scope
 
 `ASSIGNMENT.md` defines the graded requirements. `SPECIFICATION.md` preserves the original, broader specification. The original roadmap and instructor conversation are preserved under `reference/`; their checked tasks and historical prompts do not describe this implementation's progress.
 
-Required features include three difficulties, six allowed incorrect guesses, letter validation, win/loss detection, browser input, a changing Hangman drawing, testing, and deployment. The server will own the hidden answer and all game decisions. It will reveal the answer only after the game ends.
+Features include three difficulties, six allowed incorrect guesses, letter validation, win/loss detection, browser input, a changing Hangman drawing, testing, and deployment. The server owns the hidden answer and all game decisions. It reveals the answer only after the game ends.
 
 Terminal clients, bots, evaluation, scoring, leaderboards, replay, accounts, and multiplayer are outside this assignment's scope.
+
+## Architecture
+
+| Component | Responsibility |
+| --- | --- |
+| `static/index.html`, `style.css`, `app.js` | Page structure, responsive styling, user input, HTTP requests, and rendering public state |
+| `server.py` | Flask routes, request parsing, game IDs, in-memory storage, locking, and JSON responses |
+| `game.py` | Letter validation, guess history, masked pattern, remaining chances, and win/loss rules |
+| `word_manager.py` and `words/` | Validate/load the three lists and select a random answer when a game starts |
+| `gunicorn.conf.py` and `render.yaml` | Production server settings and recorded hosting configuration |
+
+A letter click or keypress sends JSON to Flask. Flask finds the game by ID and
+calls the engine; the engine validates and updates it. Flask returns public JSON,
+and JavaScript validates that response before updating the page. Only the server
+has the selected answer during play. Render runs the Python application, while
+the player's browser runs JavaScript. GitHub stores the source used for deploys.
+
+## Prerequisites
+
+- For native development: Git and Python 3.14.3, the version verified for this
+  project. Confirm `python --version` before creating the virtual environment.
+  `.python-version` records the Render version; it does not install or select
+  Python automatically in a normal Windows terminal.
+- For the Docker verification commands: Docker Desktop running Linux containers.
+  The Docker path provides Python inside the image.
+- For playing: a current browser. Chrome was used for verification.
+- For automated browser checks only: Node.js/npm and installed Chrome; see
+  [browser instructions](tests/browser/README.md).
 
 ## Local development setup
 
@@ -99,6 +129,7 @@ Hangman-Game/
 ├── README.md
 ├── DEVELOPMENT.md
 ├── TESTING.md
+├── MANUAL_TESTING.md
 ├── API.md
 ├── Dockerfile.test
 ├── Dockerfile.production
@@ -116,11 +147,12 @@ Hangman-Game/
 │   └── cursor_transcript.md
 ├── static/       # index.html, style.css, app.js
 ├── scripts/      # Real-HTTP deployment verification
+├── evidence/     # Manual testing and deployment results/screenshots
 ├── words/        # Three starter difficulty lists and provenance/format notes
 └── tests/        # Core/API/asset tests and browser QA fixtures
 ```
 
-`game.py` and `word_manager.py` implement the core; `server.py` exposes it through Flask. Empty directories contain `.gitkeep` placeholders so Git preserves the structure.
+`game.py` and `word_manager.py` implement the core; `server.py` exposes it through Flask.
 
 ## Game core
 
@@ -170,9 +202,32 @@ Games are in memory and disappear on restart. Each process has separate storage;
 a lock protects concurrent requests within one process. Use one production worker
 until shared storage is added. There is no automatic game expiration or login.
 
+## API quick example
+
+| Method and path | Request body | Successful response |
+| --- | --- | --- |
+| `POST /api/games` | `{"difficulty":"easy"}` | 201 and a new public game state |
+| `GET /api/games/{game_id}` | None | 200 and the current public state |
+| `POST /api/games/{game_id}/guess` | `{"letter":"p"}` | 200 and the updated public state |
+
+With the local server running in another terminal, use PowerShell:
+
+```powershell
+$base = 'http://127.0.0.1:5000'
+$game = Invoke-RestMethod -Uri "$base/api/games" -Method Post -ContentType 'application/json' -Body '{"difficulty":"easy"}'
+Invoke-RestMethod -Uri "$base/api/games/$($game.game_id)"
+Invoke-RestMethod -Uri "$base/api/games/$($game.game_id)/guess" -Method Post -ContentType 'application/json' -Body '{"letter":"p"}'
+```
+
+Set `$base` to `https://jnuso-hangman-game.onrender.com` to use the deployed API.
+Use the returned game ID for later requests. A 200 guess response means the guess
+was processed; `incorrect_letters` shows whether it was a miss. Active responses
+omit `word`; completed games include it. See [API.md](API.md) for full examples,
+validation rules, and error responses.
+
 ## Production setup and Render deployment
 
-Public HTTPS URL: **https://jnuso-hangman-game.onrender.com**.
+Public HTTPS URL: **[jnuso-hangman-game.onrender.com](https://jnuso-hangman-game.onrender.com)**.
 
 Deployed from GitHub commit `c3db16f` on 2026-10-26 (local date) in Jack's Render
 workspace. Build, dependency checks, and Gunicorn startup succeeded. The public

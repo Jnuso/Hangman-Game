@@ -156,8 +156,15 @@ Completion: the public application supports complete browser gameplay independen
 
 ## Phase 7 — Documentation and submission
 
-- [ ] Finish README: purpose, architecture, prerequisites, installation, startup, tests, API examples, deployment URL, and limitations.
-- [ ] Confirm the repository includes original specification, updated TODO, engine/server, frontend, word lists, dependencies, deployment configuration, and tests.
+README and repository audit completed on 2026-10-26. All 27 checked required
+implementation/documentation paths are tracked. The assignment, specification,
+and two reference documents match their first committed copies. Documentation
+links and PowerShell syntax checks passed; the corrected core-only Docker
+command passed 35 tests. Report, recording, and final submission checks remain
+pending; Phase 7 is not complete.
+
+- [x] Finish README: purpose, architecture, prerequisites, installation, startup, tests, API examples, deployment URL, and limitations.
+- [x] Confirm the repository includes original specification, updated TODO, engine/server, frontend, word lists, dependencies, deployment configuration, and tests.
 - [ ] Prepare a 1–2 page PDF report covering AI-assisted process, implementation, testing, deployment, an actual resolved challenge, and reflection.
 - [ ] Include two or three representative prompts from our own development interactions in the report.
 - [ ] Record an approximately 2–3 minute demonstration of the deployed page, game creation, guesses, a complete win/loss, and a new game.

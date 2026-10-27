@@ -117,12 +117,15 @@ From the repository root, using the configured Windows environment:
 .\.venv\Scripts\python.exe -m unittest discover -s tests -p 'test_*.py' -v
 ```
 
-## Verified Docker run
+## Core-only Docker run — Phase 2 coverage
 
-Docker Desktop must be running in Linux-container mode. From the repository root:
+Docker Desktop must be running in Linux-container mode. To reproduce only the
+35 engine/word-management tests from the current repository, use the restricted
+filename pattern below. The full 81-test suite needs Flask; use the production
+image command earlier in this document for that suite.
 
 ```powershell
-docker run --rm --network none --mount "type=bind,source=$($PWD.Path),target=/app,readonly" --workdir /app --env PYTHONDONTWRITEBYTECODE=1 python:3.14-slim python -m unittest discover -s tests -p 'test_*.py' -v
+docker run --rm --network none --mount "type=bind,source=$($PWD.Path),target=/app,readonly" --workdir /app --env PYTHONDONTWRITEBYTECODE=1 python:3.14-slim python -m unittest discover -s tests -p 'test_[gw]*.py' -v
 ```
 
 The project is mounted read-only, test fixtures live in container temporary
@@ -133,6 +136,12 @@ No Flask or additional testing dependencies are needed for this core suite.
 Observed result: **35 test methods passed** (18 engine methods and 17 word
 normalization/loading/resource methods), with additional cases exercised using
 `subTest`. No production-code changes were required by these tests.
+
+The Phase 7 documentation audit corrected this core-only command's discovery
+pattern so it does not select the later Flask-dependent tests. The revised
+command was run against the current repository and passed all **35 core tests,
+no skips, in 0.191 seconds**. The complete 81-test run remains the separate
+Phase 6 result recorded above.
 
 ## Phase 2 verification limits
 

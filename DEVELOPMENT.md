@@ -363,3 +363,33 @@ clearing active in-memory games on later documentation pushes.
 
 Phase 6 is complete. Final report, demonstration recording, remaining README
 polish, and submission checks remain Phase 7 work.
+
+## Phase 7 — README and repository audit
+
+The user approved beginning with the README/repository review. Checked the
+assignment's required contents against Git's tracked files: all 27 checked
+implementation/documentation paths are present, including engine, server,
+frontend, all word lists, dependency and deployment files, and tests. Compared
+the assignment, original specification, original roadmap, and instructor
+transcript with their first committed Git blobs; all four remain unchanged.
+No ignored environment, credential, or cache files are tracked.
+
+Removed obsolete planned/future wording from README and API instructions. Added
+an architecture/responsibility overview, explicit prerequisites, direct API
+examples, public/local API usage, and missing entries in the project layout.
+Clarified that `.python-version` records Render's selected version and does not
+select the native Windows interpreter. The sample JSON ID now uses the API's
+actual 32-character hexadecimal format while remaining clearly illustrative.
+
+Found a documentation regression in TESTING.md: the old bare-Python Docker
+command selected every test, including Flask tests added after Phase 2. Restricted
+the core command's discovery pattern to engine and word-manager files and kept
+the full-suite instructions pointed at an image with dependencies installed.
+The corrected command passed 35 core tests, no skips, in 0.191 seconds.
+
+Checked 31 relative documentation links, parsed all 19 PowerShell example blocks
+without executing them, and passed `git diff --check`. This is documentation work;
+application code and hosting configuration are unchanged, so no redeployment is
+needed. Marked only the README and repository-presence checklist items complete.
+The PDF report, representative prompts, recording, final availability recheck,
+and HuskyCT readiness remain pending.

@@ -20,7 +20,7 @@ async (page) => {
   };
   const snapshot = () =>
     page.evaluate(() => ({
-      word: document.querySelector("#word").getAttribute("aria-label"),
+      word: document.querySelector("#word-description").textContent,
       lives: document.querySelector("#remaining").textContent,
       history: document.querySelector("#guessed").textContent,
     }));

@@ -72,13 +72,13 @@
       ? game.incorrect_letters.join(" · ").toUpperCase()
       : "None yet.";
     const word = byId("word");
+    let wordDescription = "No game started";
     word.replaceChildren();
     if (!game) {
       const placeholder = document.createElement("span");
       placeholder.className = "word-placeholder";
       placeholder.textContent = "Your next word awaits.";
       word.append(placeholder);
-      word.setAttribute("aria-label", "No game started");
       byId("word-length").textContent = "Waiting for a word";
     } else {
       const letters = game.pattern.split(" ");
@@ -86,14 +86,17 @@
         const slot = document.createElement("span");
         slot.className = `letter-slot${letter === "_" ? " blank" : ""}`;
         slot.textContent = letter === "_" ? "_" : letter.toUpperCase();
-        slot.setAttribute("aria-hidden", "true");
         word.append(slot);
       }
-      word.setAttribute(
-        "aria-label",
-        `Word: ${letters.map((letter) => (letter === "_" ? "blank" : letter.toUpperCase())).join(", ")}`,
-      );
+      wordDescription =
+        `Word: ${letters.map((letter) => (letter === "_" ? "blank" : letter.toUpperCase())).join(", ")}`;
       byId("word-length").textContent = `${letters.length} letters`;
+    }
+    // Keep a real text alternative outside the hidden visual slots. Avoid
+    // announcing unchanged patterns when busy/recovery controls are rendered.
+    const description = byId("word-description");
+    if (description.textContent !== wordDescription) {
+      description.textContent = wordDescription;
     }
   }
 

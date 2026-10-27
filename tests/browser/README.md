@@ -15,6 +15,13 @@ for each difficulty, two-tab isolation, reload behavior, and browser Offline/Onl
 recovery. It compares the displayed pattern, history, lives, drawing, button
 states, and terminal message with real server responses after each action.
 
+`accessibility.js` adds **10 Chromium accessibility-tree scenarios** for the
+mystery-word text alternative. It checks real accessible text, polite/atomic
+updates, hidden visual slots, repeated letters, terminal answers, new games,
+sync and missing-game recovery. A mutation observer also checks that an
+unchanged pattern is not redundantly updated during busy/incorrect-guess renders.
+These are accessibility-tree checks, not a manual screen-reader speech test.
+
 ## Verify the deployed application
 
 `deployment.js` exercises a normal randomly selected game through the page and
@@ -54,6 +61,7 @@ npx --yes --package @playwright/cli playwright-cli -s=hangman-qa open http://127
 npx --yes --package @playwright/cli playwright-cli -s=hangman-qa --raw run-code --filename tests/browser/check.js
 npx --yes --package @playwright/cli playwright-cli -s=hangman-qa --raw run-code --filename tests/browser/edge_cases.js
 npx --yes --package @playwright/cli playwright-cli -s=hangman-qa --raw run-code --filename tests/browser/integration.js
+npx --yes --package @playwright/cli playwright-cli -s=hangman-qa --raw run-code --filename tests/browser/accessibility.js
 npx --yes --package @playwright/cli playwright-cli -s=hangman-qa close
 ```
 
@@ -86,8 +94,9 @@ resource-error console entries are expected. They are distinct from JavaScript
 runtime errors. The run returns JSON assertion results and saves desktop/mobile
 screenshots under ignored `output/playwright/`.
 
-This is Chromium desktop automation with resized viewports, not physical mobile
-device, screen-reader, or cross-browser certification. Timeout scenarios advance
+This is Chromium desktop automation with resized viewports and accessibility-tree
+inspection, not physical mobile device, screen-reader speech, or cross-browser
+certification. Timeout scenarios advance
 the real application timer by 15,001 milliseconds using Playwright's virtual
 clock; they do not depend on a 15-second wall-clock sleep. The CLI scripts must
 remain function expressions without a trailing semicolon, as required by run-code.

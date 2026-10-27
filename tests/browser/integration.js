@@ -33,7 +33,7 @@ async (page) => {
     const view = await tab.evaluate(() => {
       const text = (id) => document.getElementById(id).textContent;
       return {
-        word: document.getElementById("word").getAttribute("aria-label"),
+        word: text("word-description"),
         remaining: text("remaining"), difficulty: text("difficulty-badge"),
         drawing: document.getElementById("hangman").getAttribute("aria-label"),
         parts: document.querySelectorAll("[data-part]:not([hidden])").length,
@@ -130,7 +130,7 @@ async (page) => {
       const changed=await guess("p");
       await page.reload();
       check(await page.locator(".letter-button:disabled").count()===26,"Reload retained active local controls");
-      check(await page.locator("#word").getAttribute("aria-label")==="No game started","Reload state does not match documented behavior");
+      check(await page.locator("#word-description").textContent()==="No game started","Reload state does not match documented behavior");
       const response=await page.request.get(`${base}/api/games/${first.game_id}`);
       check(JSON.stringify(await response.json())===JSON.stringify(changed),"Reload modified server state");
       const fresh=await start();

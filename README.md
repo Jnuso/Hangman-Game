@@ -7,8 +7,9 @@ Repository: [Jnuso/Hangman-Game](https://github.com/Jnuso/Hangman-Game).
 ## Current status
 
 Phases 1–6 are complete. Automated checks pass: 81 Python tests,
-43 browser walkthrough assertions, 22 browser edge scenarios, and 9 browser
-integration scenarios. All 120 bundled words have controlled API win/loss coverage.
+43 browser walkthrough assertions, 22 browser edge scenarios, 9 browser
+integration scenarios, and 10 Chromium accessibility-tree scenarios.
+All 120 bundled words have controlled API win/loss coverage.
 The playable interface supports all difficulties, mouse/keyboard guesses, an SVG
 drawing, restart, and network recovery. Manual Phase 5 evidence and the approved
 request/response explanation are in `MANUAL_TESTING.md`. The production setup
@@ -109,7 +110,7 @@ tests cover request validation, status codes, game isolation, answer disclosure,
 concurrent duplicate guesses, complete games, and HTML/CSS/JavaScript delivery.
 Slow-upload regressions also verify that request-body reads leave other games
 usable and delayed guesses are checked against the latest game state.
-There are also **43 browser walkthrough assertions, 22 edge scenarios, and 9 integration scenarios**; see `tests/browser/README.md` for
+There are also **43 browser walkthrough assertions, 22 edge scenarios, 9 integration scenarios, and 10 accessibility scenarios**; see `tests/browser/README.md` for
 reproduction instructions and verification limits.
 
 `tests/test_integration.py` plays controlled wins and six-miss losses for every

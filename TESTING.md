@@ -2,10 +2,34 @@
 
 Current result: **81 passing Python test methods** (18 engine, 17 word management,
 36 API/live HTTP including slow uploads, 6 browser-asset delivery, 4 integration),
-plus **43 browser walkthrough assertions, 22 browser edge scenarios, and 9 browser integration
-scenarios**. Manual Phase 5 checks and the user's approved explanation are complete
+plus **43 browser walkthrough assertions, 22 browser edge scenarios, 9 browser integration
+scenarios, and 10 Chromium accessibility-tree scenarios**. Manual Phase 5 checks and the user's approved explanation are complete
 in `MANUAL_TESTING.md`.
 Earlier counts below describe the runs at those milestones.
+
+## Accessibility follow-up — 2026-10-27
+
+The mystery-word pattern now has a real text alternative in a persistent,
+visually hidden paragraph. The visual row is aria-hidden to prevent duplicate
+readings. The paragraph uses polite, atomic live updates; rendering busy/recovery
+controls does not mutate an unchanged pattern or repeatedly announce it.
+
+Verified locally with the updated source mounted read-only in Linux Docker:
+**81 Python tests passed, no skips, 4.770 seconds**. Chrome fixture runs passed
+the existing **43 walkthrough assertions, 22 edge scenarios, and 9 integration
+scenarios (51 API state comparisons)**, plus the new **10 accessibility scenarios**.
+
+`tests/browser/accessibility.js` inspects Chrome's actual accessibility tree
+for real StaticText and live-region semantics at initialization, game creation,
+repeated letters, an incorrect guess, win, loss, restart, accepted-but-lost
+response followed by sync, missing game, and starting again after recovery.
+It also checks that unchanged patterns are not mutated, terminal answers remain
+accessible, and the visual row is ignored by accessibility.
+
+These checks verify Chromium's accessibility representation and DOM updates;
+NVDA/JAWS/VoiceOver speech output has not been manually verified. This is a
+local source verification, not a deployment of the fix. See the browser README
+for reproduction.
 
 The suite uses standard-library `unittest`, known answers for engine scenarios,
 and temporary directories for file-loading scenarios. Tests use public behavior;

@@ -37,7 +37,7 @@ async (page) => {
   check(await page.locator('.letter-button:disabled').count() === 26, 'letters disabled before starting');
   await start();
   await guess('p');
-  check(await page.locator('#word').getAttribute('aria-label') === 'Word: blank, P, P, blank, blank', 'click reveals repeated letters');
+  check(await page.locator('#word-description').textContent() === 'Word: blank, P, P, blank, blank', 'click reveals repeated letters');
   check(await page.locator('#remaining').textContent() === '6', 'correct guess preserves lives');
   await guess('z', true);
   check(await page.locator('#remaining').textContent() === '5', 'physical keyboard sends incorrect guess');

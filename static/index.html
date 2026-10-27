@@ -107,9 +107,15 @@
               <span class="eyebrow">THE MYSTERY WORD</span
               ><span id="word-length" class="muted">Waiting for a word</span>
             </div>
-            <div id="word" class="word" aria-label="No game started">
+            <div id="word" class="word" aria-hidden="true">
               <span class="word-placeholder">Your next word awaits.</span>
             </div>
+            <p
+              id="word-description"
+              class="visually-hidden"
+              aria-live="polite"
+              aria-atomic="true"
+            >No game started</p>
             <div
               id="message"
               class="message"

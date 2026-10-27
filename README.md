@@ -6,13 +6,16 @@ Repository: https://github.com/Jnuso/Hangman-Game
 
 ## Current status
 
-Phases 1–5 are complete. Automated checks pass: 81 Python tests,
+Phases 1–6 are complete. Automated checks pass: 81 Python tests,
 43 browser walkthrough assertions, 22 browser edge scenarios, and 9 browser
 integration scenarios. All 120 bundled words have controlled API win/loss coverage.
 The playable interface supports all difficulties, mouse/keyboard guesses, an SVG
 drawing, restart, and network recovery. Manual Phase 5 evidence and the approved
-request/response explanation are in `MANUAL_TESTING.md`. Phase 6 production setup
-has passed local Docker verification; the public deployment is still pending.
+request/response explanation are in `MANUAL_TESTING.md`. The production setup
+passed local Docker verification, and the live Render deployment passed 55 HTTP
+checks plus 56 Chrome assertions, with desktop/mobile screenshots reviewed.
+
+Play online: **[jnuso-hangman-game.onrender.com](https://jnuso-hangman-game.onrender.com)**.
 
 See `TODO.md` for the accepted phased plan. Implement and verify one phase at a time.
 
@@ -169,7 +172,20 @@ until shared storage is added. There is no automatic game expiration or login.
 
 ## Production setup and Render deployment
 
-Public HTTPS URL: **pending deployment and verification**.
+Public HTTPS URL: **https://jnuso-hangman-game.onrender.com**.
+
+Deployed from GitHub commit `c3db16f` on 2026-10-26 (local date) in Jack's Render
+workspace. Build, dependency checks, and Gunicorn startup succeeded. The public
+site passed all three API endpoints, gameplay at each difficulty, complete rounds,
+and actual Chrome play through a full game followed by New game. No local
+development servers were listening on ports 5000, 5056, or 5057, and the local
+production-check container was removed before public verification.
+
+Evidence: [results](evidence/deployment/2026-10-26/public-verification.json),
+[selected startup logs](evidence/deployment/2026-10-26/render-startup.txt),
+[desktop play](evidence/deployment/2026-10-26/deployed-desktop-playing.png),
+[finished round](evidence/deployment/2026-10-26/deployed-desktop-finished.png), and
+[mobile play](evidence/deployment/2026-10-26/deployed-mobile-playing.png).
 
 Render runs this repository as a Python Web Service. The checked-in `render.yaml`
 records a Free service in Virginia, one instance, the `main` branch, and manual
@@ -223,9 +239,18 @@ modify other players' games. `Dockerfile.test` remains the separate test-depende
 image; `Dockerfile.production` copies only runtime files and runs Gunicorn as a
 non-root user.
 
-Deployment verification must additionally check a real browser, a complete game
-and New game, and public availability with the local check container stopped.
-Record the actual public URL and results before marking Phase 6 complete.
+For a public HTTP recheck, use the same image and read-only script mount without
+the container network option:
+
+```powershell
+docker run --rm --mount "type=bind,source=$($PWD.Path)\scripts\check_deployment.py,target=/checks/check_deployment.py,readonly" hangman-production python /checks/check_deployment.py https://jnuso-hangman-game.onrender.com
+```
+
+See `tests/browser/README.md` for the separate real-browser deployment check.
+That check passed 56 assertions, including display/response agreement, both input
+methods, all difficulty controls, a completed game, New game, and narrow layouts.
+No browser runtime errors were observed. These runs verify the deployed commit;
+repeat the checks after changing runtime code or deployment settings.
 
 Limitations: games disappear on process restarts, redeploys, or worker replacement.
 One worker/instance is required until shared storage is introduced. Free Render

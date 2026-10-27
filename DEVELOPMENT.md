@@ -334,3 +334,32 @@ The coding-workers independent review was attempted with this project path but
 returned `invalid_project` because it is outside that backend's configured
 `CODING_AGENTS_ROOTS`. No findings, test verification, or artifacts came from that
 worker. Direct Docker verification supplies the test evidence above.
+
+## Phase 6 completion — Public Render service
+
+Pushed the verified production preparation in `c3db16f`, then created
+`jnuso-hangman-game` in the user's confirmed Jack's workspace using the Render
+plugin. The service uses the Free plan in Virginia, one instance, the GitHub main
+branch, and automatic deploys disabled. Its first deploy
+`dep-dbg17buk1f9s73b1ll40` reached `live`. Render logs confirm Python 3.14.3 from
+`.python-version`, successful dependency checks, and Gunicorn's gthread startup
+on port 10000. Public URL: https://jnuso-hangman-game.onrender.com.
+
+Removed the task-owned local production container before public checks and
+confirmed no local development listeners on ports 5000, 5056, or 5057. The HTTPS
+deployment passed 55 real HTTP checks, completing rounds at all difficulties and
+verifying validation, state persistence between requests, answer protection,
+and concurrent duplicate rejection. Chrome passed 56 assertions through a full
+loss, New game, all difficulty controls, mouse/keyboard input, server/display
+agreement, and narrow layouts, with no JavaScript runtime errors. Visually
+reviewed three screenshots, copied them with hash verification, and preserved
+the executed browser script as `tests/browser/deployment.js` for reproduction.
+
+Updated README, TESTING.md, the browser instructions, and the Phase 6 checklist
+with the public URL, actual results, reproduction commands, and limits. Evidence
+is in `evidence/deployment/2026-10-26/`. The final evidence/documentation commit
+does not require redeploying the unchanged runtime code. Manual redeploys avoid
+clearing active in-memory games on later documentation pushes.
+
+Phase 6 is complete. Final report, demonstration recording, remaining README
+polish, and submission checks remain Phase 7 work.

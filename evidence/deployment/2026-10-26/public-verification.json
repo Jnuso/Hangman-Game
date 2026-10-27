@@ -1,0 +1,135 @@
+{
+  "local_date": "2026-10-26",
+  "utc_verification_date": "2026-10-27",
+  "service": {
+    "name": "jnuso-hangman-game",
+    "url": "https://jnuso-hangman-game.onrender.com",
+    "service_id": "srv-dbg17bek1f9s73b1ljp0",
+    "deploy_id": "dep-dbg17buk1f9s73b1ll40",
+    "deployed_commit": "c3db16fee8a4ed4625fb651a40a57c38fc31e3e3",
+    "status": "live",
+    "plan": "free",
+    "region": "virginia",
+    "num_instances": 1,
+    "automatic_deploys": "off",
+    "python": "3.14.3",
+    "gunicorn": "26.2.0",
+    "worker_class": "gthread",
+    "workers": 1,
+    "threads": 4,
+    "port": 10000
+  },
+  "independence": {
+    "local_production_check_container": "stopped and removed before public checks",
+    "local_development_ports_listening": [],
+    "ports_checked": [
+      5000,
+      5056,
+      5057
+    ]
+  },
+  "http_smoke": {
+    "base_url": "https://jnuso-hangman-game.onrender.com",
+    "requests_checked": 55,
+    "completed_rounds": [
+      {
+        "difficulty": "easy",
+        "status": "lost"
+      },
+      {
+        "difficulty": "medium",
+        "status": "lost"
+      },
+      {
+        "difficulty": "hard",
+        "status": "lost"
+      }
+    ],
+    "concurrent_duplicate_statuses": [
+      200,
+      409
+    ],
+    "restart_game_id": "347b6eca45654e8380dd61d32da130d2",
+    "result": "passed"
+  },
+  "browser": {
+    "url": "https://jnuso-hangman-game.onrender.com/",
+    "passed": 56,
+    "checks": [
+      "initial controls disabled",
+      "expected API status 201",
+      "active answer omitted",
+      "page pattern/lives/difficulty/drawing match server",
+      "all keyboard states match server",
+      "fresh game resets state",
+      "expected API status 200",
+      "active answer omitted",
+      "page pattern/lives/difficulty/drawing match server",
+      "all keyboard states match server",
+      "expected API status 200",
+      "active answer omitted",
+      "page pattern/lives/difficulty/drawing match server",
+      "all keyboard states match server",
+      "expected API status 200",
+      "active answer omitted",
+      "page pattern/lives/difficulty/drawing match server",
+      "all keyboard states match server",
+      "expected API status 200",
+      "active answer omitted",
+      "page pattern/lives/difficulty/drawing match server",
+      "all keyboard states match server",
+      "expected API status 200",
+      "active answer omitted",
+      "page pattern/lives/difficulty/drawing match server",
+      "all keyboard states match server",
+      "expected API status 200",
+      "active answer omitted",
+      "page pattern/lives/difficulty/drawing match server",
+      "all keyboard states match server",
+      "complete game through browser",
+      "terminal answer displayed",
+      "terminal keyboard disabled",
+      "expected API status 201",
+      "active answer omitted",
+      "page pattern/lives/difficulty/drawing match server",
+      "all keyboard states match server",
+      "fresh game resets state",
+      "new game without reload",
+      "expected API status 200",
+      "active answer omitted",
+      "page pattern/lives/difficulty/drawing match server",
+      "all keyboard states match server",
+      "expected API status 201",
+      "active answer omitted",
+      "page pattern/lives/difficulty/drawing match server",
+      "all keyboard states match server",
+      "fresh game resets state",
+      "expected API status 200",
+      "active answer omitted",
+      "page pattern/lives/difficulty/drawing match server",
+      "all keyboard states match server",
+      "375px layout without horizontal overflow",
+      "mobile letter target at least 40px",
+      "320px layout without horizontal overflow",
+      "no browser runtime errors"
+    ],
+    "terminal": {
+      "status": "lost",
+      "word": "moon"
+    },
+    "runtimeErrors": [],
+    "result": "passed",
+    "script": "tests/browser/deployment.js",
+    "screenshots": [
+      "deployed-desktop-playing.png",
+      "deployed-desktop-finished.png",
+      "deployed-mobile-playing.png"
+    ],
+    "visually_reviewed": true
+  },
+  "limitations": [
+    "In-memory games are lost when a worker/process restarts.",
+    "Free Render service spins down after 15 minutes idle; startup can be delayed.",
+    "No database, user accounts, or cross-process game sharing."
+  ]
+}

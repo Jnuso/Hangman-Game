@@ -134,15 +134,23 @@ Completion: required flows and failure cases are verified locally with reproduci
 Deploy from the user's GitHub repository to a Flask-capable host. Public hosting
 is intentionally deferred until this phase.
 
+Verified complete on 2026-10-26 (local date). The Free Render Web Service at
+https://jnuso-hangman-game.onrender.com runs GitHub commit `c3db16f` with Python
+3.14.3, one Gunicorn worker, and four threads. The local production setup passed
+81 existing tests and 54 HTTP checks; the deployed app passed 55 HTTP checks and
+56 Chrome assertions. Screenshots were inspected at desktop and mobile widths.
+The local check container was removed and no development servers were listening
+on ports 5000, 5056, or 5057 during the public checks. See README and TESTING.md.
+
 - [x] Prepare production dependencies and Render configuration (or document an equivalent host).
 - [x] Configure a production startup command matching the application module and host-provided port, with debug disabled.
 - [x] Use one worker if game storage remains in memory; document that process restarts clear active games.
-- [ ] Push deployment-ready code and deploy from the Hangman-Game GitHub repository.
-- [ ] Verify the public HTTPS URL serves the interface and all three required API endpoints.
-- [ ] Play a complete game and start another on the deployed app.
-- [ ] Verify the deployment operates while the local development server is stopped.
-- [ ] Record the public URL, deployment steps, actual verification, and applicable hosting limitations in README.
-- [ ] Commit/push any verified deployment fixes.
+- [x] Push deployment-ready code and deploy from the Hangman-Game GitHub repository.
+- [x] Verify the public HTTPS URL serves the interface and all three required API endpoints.
+- [x] Play a complete game and start another on the deployed app.
+- [x] Verify the deployment operates while the local development server is stopped.
+- [x] Record the public URL, deployment steps, actual verification, and applicable hosting limitations in README.
+- [x] Commit/push any verified deployment fixes.
 
 Completion: the public application supports complete browser gameplay independently of the local computer.
 

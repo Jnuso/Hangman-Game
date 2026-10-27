@@ -1,0 +1,12 @@
+Selected Render startup log messages for srv-dbg17bek1f9s73b1ljp0.
+UTC timestamps are October 27; the user's local date was October 26.
+
+2026-10-27T03:00:04.18482874Z Using Python version 3.14.3 via /opt/render/project/src/.python-version
+2026-10-27T03:00:10.055771647Z Successfully installed Flask-3.1.3 Jinja2-3.1.6 MarkupSafe-3.0.4 Werkzeug-3.1.9 blinker-1.9.0 click-8.5.0 gunicorn-26.2.0 itsdangerous-2.2.0 packaging-26.3
+2026-10-27T03:00:10.537999223Z No broken requirements found.
+2026-10-27T03:00:19.393524304Z Build successful
+2026-10-27T03:00:52.101665812Z [57] [INFO] Starting gunicorn 26.2.0
+2026-10-27T03:00:52.101809606Z [57] [INFO] Listening at: http://0.0.0.0:10000 (57)
+2026-10-27T03:00:52.101889418Z [57] [INFO] Using worker: gthread
+2026-10-27T03:00:52.106245227Z [58] [INFO] Booting worker with pid: 58
+2026-10-27T03:01:01.788152831Z Your service is live

@@ -15,7 +15,29 @@ for each difficulty, two-tab isolation, reload behavior, and browser Offline/Onl
 recovery. It compares the displayed pattern, history, lives, drawing, button
 states, and terminal message with real server responses after each action.
 
-## Reproduce
+## Verify the deployed application
+
+`deployment.js` exercises a normal randomly selected game through the page and
+compares each API response with the rendered pattern, lives, drawing, difficulty,
+and all letter-button states. It covers all difficulty controls, mouse and
+physical keyboard guesses, a complete game, New game, terminal answer disclosure,
+and 375px/320px layouts. It inspects only the public state and does not read the
+server's hidden answer. Its assertion count varies with the random round length.
+
+From the repository root, with Node/npm and Chrome installed:
+
+```powershell
+npx --yes --package @playwright/cli playwright-cli -s=hangman-deployment open https://jnuso-hangman-game.onrender.com --headed --browser=chrome
+npx --yes --package @playwright/cli playwright-cli -s=hangman-deployment --raw run-code --filename tests/browser/deployment.js
+npx --yes --package @playwright/cli playwright-cli -s=hangman-deployment close
+```
+
+The verified deployment run passed 56 assertions with no runtime errors. It saved
+screenshots under ignored `output/playwright/`; reviewed copies and the actual
+results are preserved in `evidence/deployment/2026-10-26/`. This is a separate
+deployment check, not a rerun of the controlled suites described below.
+
+## Reproduce controlled fixture suites
 
 Start Docker Desktop, build the dependency image using the command in
 `TESTING.md`, and run this from the repository root (PowerShell):

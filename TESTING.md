@@ -52,9 +52,38 @@ docker run --rm --network none --mount "type=bind,source=$($PWD.Path),target=/ap
 ```
 
 See README for running the HTTP smoke script against a running local container
-or public URL. Browser verification and public hosting remain pending until the
-actual Render deployment is available; local production success does not mark
-the cloud-verification checklist complete.
+or public URL.
+
+### Public Render verification
+
+The Free service https://jnuso-hangman-game.onrender.com deployed GitHub commit
+`c3db16f` successfully in Virginia, using Python 3.14.3 and Gunicorn 26.2.0.
+The Render logs confirm its dependency check, port 10000, and gthread worker.
+The actual service has one instance and automatic deploys disabled, matching the
+checked-in configuration. The local production-check container was removed
+before public testing; ports 5000, 5056, and 5057 had no listening local servers.
+
+The same HTTP smoke script passed **55 requests** against the HTTPS deployment,
+including complete random rounds at every difficulty (losses in this run), a new
+game, all three endpoints, validation, hidden-answer protection, and concurrent
+duplicate rejection. Request totals vary with the randomly selected words.
+
+Chrome verification through `tests/browser/deployment.js` passed **56 assertions**
+with no runtime errors. It compared the pattern, difficulty, lives, drawing, and
+all 26 button states with each actual API response; checked answer omission while
+playing; used clicks and physical keys; completed a loss (MOON); checked the final
+answer and disabled keyboard; started another game without reload; and played
+at Medium and Hard. Layout checks passed at 375px and 320px; mobile button height
+was at least 40px. Desktop play, terminal state, and mobile screenshots were
+visually reviewed and saved under `evidence/deployment/2026-10-26/` alongside
+`public-verification.json` and selected Render startup logs.
+
+The browser deployment script uses normal random words and does not replace the
+earlier controlled fixture suites. Its assertion count varies with round length;
+the earlier 43/22/9 browser results remain separate historical runs. Public checks
+do not certify every browser or physical device, continuous hosting availability,
+or game persistence across process restarts. Free-service sleep/restart behavior
+and the in-memory storage limitation are documented in README.
 
 ## Coverage
 

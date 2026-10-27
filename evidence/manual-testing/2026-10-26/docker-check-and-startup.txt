@@ -1,0 +1,57 @@
+Windows PowerShell
+Copyright (C) Microsoft Corporation. All rights reserved.
+
+PS C:\Users\Jnuso> Set-Location 'C:\Users\Jnuso\OneDrive\Documents\UCONN FALL 2026\CSE4095\Assignment 14\Hangman-Game'
+PS C:\Users\Jnuso\OneDrive\Documents\UCONN FALL 2026\CSE4095\Assignment 14\Hangman-Game> docker build --pull --no-cache -f Dockerfile.test -t hangman-manual-check .
+[+] Building 13.8s (9/9) FINISHED                                                                  docker:desktop-linux
+ => [internal] load build definition from Dockerfile.test                                                          0.0s
+ => => transferring dockerfile: 299B                                                                               0.0s
+ => [internal] load metadata for docker.io/library/python:3.14-slim                                                1.3s
+ => [internal] load .dockerignore                                                                                  0.0s
+ => => transferring context: 89B                                                                                   0.0s
+ => [1/4] FROM docker.io/library/python:3.14-slim@sha256:c2aca8207dfb68e7d20fecb7fad7e145c5d79d2ff36712d416c14413  4.8s
+ => => resolve docker.io/library/python:3.14-slim@sha256:c2aca8207dfb68e7d20fecb7fad7e145c5d79d2ff36712d416c14413  0.0s
+ => => sha256:cf01b8c3e5cdfa821553df5876421fa668994462a97521559e33a08c846bdc7c 248B / 248B                         0.1s
+ => => sha256:f2653477103956dff27db1bc39e480465c1d75524c48abdeeba141f7c99d0a31 12.41MB / 12.41MB                   4.0s
+ => => sha256:a39baf2ebe086ad16daa557c3497ff937b42d135ac6762491641d77218bcf48c 1.55MB / 1.55MB                     2.4s
+ => => extracting sha256:a39baf2ebe086ad16daa557c3497ff937b42d135ac6762491641d77218bcf48c                          0.3s
+ => => extracting sha256:f2653477103956dff27db1bc39e480465c1d75524c48abdeeba141f7c99d0a31                          0.6s
+ => => extracting sha256:cf01b8c3e5cdfa821553df5876421fa668994462a97521559e33a08c846bdc7c                          0.0s
+ => [internal] load build context                                                                                  0.0s
+ => => transferring context: 37B                                                                                   0.0s
+ => [2/4] WORKDIR /app                                                                                             0.1s
+ => [3/4] COPY requirements.txt /app/requirements.txt                                                              0.0s
+ => [4/4] RUN python -m pip install --no-cache-dir -r requirements.txt                                             5.9s
+ => exporting to image                                                                                             1.3s
+ => => exporting layers                                                                                            0.8s
+ => => exporting manifest sha256:72bf15802df2630aec94f6c4362b2d7f2711c3f3269e8893eb89ff318a9f4dad                  0.1s
+ => => exporting config sha256:3841b0d91b766795cb373aa526d9a68d799adf0ac837fb1e743d296149fddf93                    0.0s
+ => => exporting attestation manifest sha256:c9558112372fff16a82f658c65d62c578d02093d343e1fed855e9403a3b5dee4      0.0s
+ => => exporting manifest list sha256:c36a29536491cdb4008db0c3c9330478907adc575881da0418b67a6d65ab58bb             0.0s
+ => => naming to docker.io/library/hangman-manual-check:latest                                                     0.0s
+ => => unpacking to docker.io/library/hangman-manual-check:latest                                                  0.3s
+
+View build details: docker-desktop://dashboard/build/desktop-linux/desktop-linux/sqn04jlvr7sh1gsk3g5fegbsx
+PS C:\Users\Jnuso\OneDrive\Documents\UCONN FALL 2026\CSE4095\Assignment 14\Hangman-Game>
+PS C:\Users\Jnuso\OneDrive\Documents\UCONN FALL 2026\CSE4095\Assignment 14\Hangman-Game> docker run --rm hangman-manual-check python -m pip check
+No broken requirements found.
+PS C:\Users\Jnuso\OneDrive\Documents\UCONN FALL 2026\CSE4095\Assignment 14\Hangman-Game> docker run --rm --name hangman-manual-check --publish 127.0.0.1:5056:5000 --mount "type=bind,source=$($PWD.Path),target=/app,readonly" hangman-manual-check python -m flask --app server run --host 0.0.0.0 --port 5000
+ * Serving Flask app 'server'
+ * Debug mode: off
+WARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://172.17.0.2:5000
+Press CTRL+C to quit
+172.17.0.1 - - [27/Oct/2026 01:05:28] "GET / HTTP/1.1" 200 -
+172.17.0.1 - - [27/Oct/2026 01:05:28] "GET /static/style.css HTTP/1.1" 200 -
+172.17.0.1 - - [27/Oct/2026 01:05:28] "GET /static/app.js HTTP/1.1" 200 -
+172.17.0.1 - - [27/Oct/2026 01:05:35] "GET / HTTP/1.1" 200 -
+172.17.0.1 - - [27/Oct/2026 01:05:35] "GET /static/style.css HTTP/1.1" 200 -
+172.17.0.1 - - [27/Oct/2026 01:05:35] "GET /static/app.js HTTP/1.1" 200 -
+172.17.0.1 - - [27/Oct/2026 01:05:55] "POST /api/games HTTP/1.1" 201 -
+172.17.0.1 - - [27/Oct/2026 01:05:57] "POST /api/games/cbf399f82a074fca9d02cef2766d0c9e/guess HTTP/1.1" 200 -
+172.17.0.1 - - [27/Oct/2026 01:06:16] "POST /api/games HTTP/1.1" 201 -
+172.17.0.1 - - [27/Oct/2026 01:06:17] "POST /api/games/8e4d3ba305cf4fa1a3ff5465551b4ce5/guess HTTP/1.1" 200 -
+172.17.0.1 - - [27/Oct/2026 01:06:28] "POST /api/games HTTP/1.1" 201 -
+172.17.0.1 - - [27/Oct/2026 01:06:29] "POST /api/games/425342b909f845ffab9ddcc6b19abf3f/guess HTTP/1.1" 200 -

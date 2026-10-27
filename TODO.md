@@ -105,11 +105,14 @@ Automated portion verified: 81 Python tests and browser suites with 43 walkthrou
 assertions, 22 edge scenarios, and 9 integration scenarios passed. Checked items
 below have automated evidence or reviewed manual screenshots. The user confirmed
 all seven manual Gameplay and usability checks complete on 2026-10-26. Developer
-Tools creation/guess screenshots are saved and verified. The user's request/response
-explanation and setup/recovery review remain pending in `MANUAL_TESTING.md`.
-The user deferred the manual clean-install/startup check until later and selected
-Docker for that check; it remains unchecked.
-Phase 5 is not complete yet.
+Tools creation/guess screenshots and manual Offline/Online/Sync and server-restart
+recovery evidence are saved and verified. Manual Docker setup is also verified:
+the clean image build and pip dependency check passed, Flask started with debug
+off, and the user played a guess at each difficulty through localhost port 5056.
+All hands-on checks are complete. The user approved the revised request/response
+explanation and end-of-phase observations for commit/push on 2026-10-26. The final
+explanation and supporting manual evidence are recorded in `MANUAL_TESTING.md`.
+Phase 5 local verification and explanation are complete.
 
 - [x] Run the full engine, word-management, and API test suite and resolve failures.
 - [x] Fix the audit's slow-upload lock issue and verify request availability, delayed duplicate/finished-game rejection, and unknown-ID precedence with regression tests.
@@ -118,9 +121,11 @@ Phase 5 is not complete yet.
 - [x] Verify independent games do not affect each other.
 - [x] Inspect browser responses and assets to confirm the active answer is not exposed.
 - [x] Use Chrome Developer Tools to inspect at least one guess request and its JSON response.
-- [ ] Record the request → Flask → JSON → browser-update sequence for the report and demonstration.
-- [ ] Manually verify installation and startup from the documented Docker instructions (deferred until later at the user's request).
-- [x] Document actual automated results and known limitations; commit/push verified test additions. Add manual evidence after the pending review.
+- [x] Manually verify Offline/Online/Sync recovery: GET returns the existing game without recording the failed guess or consuming another life.
+- [x] Manually verify server-restart recovery: the old ID returns 404 with a restart prompt, then New game returns 201 and fresh playable state.
+- [x] Record the request → Flask → JSON → browser-update sequence for the report and demonstration.
+- [x] Manually verify installation and startup from the documented Docker instructions, including pip check and browser gameplay at all three difficulties.
+- [x] Document actual automated results and known limitations, preserve manual evidence and the approved explanation, and commit/push verified Phase 5 work.
 
 Completion: required flows and failure cases are verified locally with reproducible evidence.
 

@@ -13,8 +13,10 @@ All 120 bundled words have controlled API win/loss coverage.
 The playable interface supports all difficulties, mouse/keyboard guesses, an SVG
 drawing, restart, and network recovery. Manual Phase 5 evidence and the approved
 request/response explanation are in `MANUAL_TESTING.md`. The production setup
-passed local Docker verification, and the live Render deployment passed 55 HTTP
-checks plus 56 Chrome assertions, with desktop/mobile screenshots reviewed.
+passed local Docker verification. The initial October 26 Render deployment passed
+55 HTTP checks and 56 Chrome assertions. The October 29 release deploys the
+accessibility fix and passed 55 HTTP requests, 64 deployment browser assertions,
+4 live Chromium accessibility-tree scenarios, and 70 extended browser checks.
 
 Play online: **[jnuso-hangman-game.onrender.com](https://jnuso-hangman-game.onrender.com)**.
 
@@ -230,14 +232,28 @@ validation rules, and error responses.
 
 Public HTTPS URL: **[jnuso-hangman-game.onrender.com](https://jnuso-hangman-game.onrender.com)**.
 
-Deployed from GitHub commit `c3db16f` on 2026-10-26 (local date) in Jack's Render
-workspace. Build, dependency checks, and Gunicorn startup succeeded. The public
+The current release runs GitHub commit
+`7f9a5a3570010418ed9bf3ef9b5ce9a30edda285`. Render deployment
+`dep-dbhs2n8n74is73cig6sg` finished successfully at
+`2026-10-29T21:58:40.555487Z`. The public site passed 55 HTTP requests,
+64 deployment browser assertions, 4 live Chromium accessibility-tree scenarios,
+and 70 extended control/recovery/layout checks with 129 UI/API state comparisons.
+All three frontend assets match the release commit. These checks used native
+Python and Chrome; see the dated results in [TESTING.md](TESTING.md).
+
+Current evidence: [results](evidence/deployment/2026-10-29/public-verification.json),
+[desktop play](evidence/deployment/2026-10-29/deployed-desktop-playing.png),
+[finished round](evidence/deployment/2026-10-29/deployed-desktop-finished.png), and
+[mobile play](evidence/deployment/2026-10-29/deployed-mobile-playing.png).
+
+Initial deployment: GitHub commit `c3db16f` on 2026-10-26 (local date) in Jack's
+Render workspace. Build, dependency checks, and Gunicorn startup succeeded. The public
 site passed all three API endpoints, gameplay at each difficulty, complete rounds,
 and actual Chrome play through a full game followed by New game. No local
 development servers were listening on ports 5000, 5056, or 5057, and the local
 production-check container was removed before public verification.
 
-Evidence: [results](evidence/deployment/2026-10-26/public-verification.json),
+Initial deployment evidence: [results](evidence/deployment/2026-10-26/public-verification.json),
 [selected startup logs](evidence/deployment/2026-10-26/render-startup.txt),
 [desktop play](evidence/deployment/2026-10-26/deployed-desktop-playing.png),
 [finished round](evidence/deployment/2026-10-26/deployed-desktop-finished.png), and

@@ -134,13 +134,19 @@ Completion: required flows and failure cases are verified locally with reproduci
 Deploy from the user's GitHub repository to a Flask-capable host. Public hosting
 is intentionally deferred until this phase.
 
-Verified complete on 2026-10-26 (local date). The Free Render Web Service at
-https://jnuso-hangman-game.onrender.com runs GitHub commit `c3db16f` with Python
+Initial deployment verified complete on 2026-10-26 (local date). The Free Render Web Service at
+https://jnuso-hangman-game.onrender.com ran GitHub commit `c3db16f` with Python
 3.14.3, one Gunicorn worker, and four threads. The local production setup passed
 81 existing tests and 54 HTTP checks; the deployed app passed 55 HTTP checks and
 56 Chrome assertions. Screenshots were inspected at desktop and mobile widths.
 The local check container was removed and no development servers were listening
 on ports 5000, 5056, or 5057 during the public checks. See README and TESTING.md.
+
+October 29 follow-up: deployed accessibility-fix commit `7f9a5a3` successfully.
+Native Python and Chrome public checks passed 55 HTTP requests, 64 deployment
+browser assertions, 4 Chromium accessibility-tree scenarios, and 70 extended
+control/recovery/layout checks (129 UI/API state comparisons). All three frontend
+assets match the release commit. Evidence: `evidence/deployment/2026-10-29/`.
 
 - [x] Prepare production dependencies and Render configuration (or document an equivalent host).
 - [x] Configure a production startup command matching the application module and host-provided port, with debug disabled.

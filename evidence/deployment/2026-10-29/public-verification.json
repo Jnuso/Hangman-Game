@@ -1,0 +1,526 @@
+{
+  "verified_at_utc": "2026-10-29T22:04:32.783328+00:00",
+  "base_url": "https://jnuso-hangman-game.onrender.com/",
+  "runtime_commit": "7f9a5a3570010418ed9bf3ef9b5ce9a30edda285",
+  "render_service_id": "srv-dbg17bek1f9s73b1ljp0",
+  "render_deployment": {
+    "commit": {
+      "createdAt": "2026-10-27T21:14:06Z",
+      "id": "7f9a5a3570010418ed9bf3ef9b5ce9a30edda285",
+      "message": "Fix accessible word pattern and add browser regressions"
+    },
+    "createdAt": "2026-10-29T21:57:49.320357Z",
+    "finishedAt": "2026-10-29T21:58:40.555487Z",
+    "id": "dep-dbhs2n8n74is73cig6sg",
+    "startedAt": "2026-10-29T21:57:49.293115Z",
+    "status": "live",
+    "trigger": "api",
+    "updatedAt": "2026-10-29T21:59:07.73317Z"
+  },
+  "execution": "Native Windows Python and Chrome through Playwright CLI; no Docker used for this follow-up",
+  "http": {
+    "base_url": "https://jnuso-hangman-game.onrender.com",
+    "requests_checked": 55,
+    "completed_rounds": [
+      {
+        "difficulty": "easy",
+        "status": "lost"
+      },
+      {
+        "difficulty": "medium",
+        "status": "lost"
+      },
+      {
+        "difficulty": "hard",
+        "status": "lost"
+      }
+    ],
+    "concurrent_duplicate_statuses": [
+      200,
+      409
+    ],
+    "restart_game_id": "1aa71a3af769484091e08c90e37a7e26",
+    "result": "passed"
+  },
+  "browser": {
+    "url": "https://jnuso-hangman-game.onrender.com/",
+    "passed": 64,
+    "checks": [
+      "initial controls disabled",
+      "expected API status 201",
+      "active answer omitted",
+      "page pattern/lives/difficulty/drawing match server",
+      "all keyboard states match server",
+      "fresh game resets state",
+      "expected API status 200",
+      "active answer omitted",
+      "page pattern/lives/difficulty/drawing match server",
+      "all keyboard states match server",
+      "expected API status 200",
+      "active answer omitted",
+      "page pattern/lives/difficulty/drawing match server",
+      "all keyboard states match server",
+      "expected API status 200",
+      "active answer omitted",
+      "page pattern/lives/difficulty/drawing match server",
+      "all keyboard states match server",
+      "expected API status 200",
+      "active answer omitted",
+      "page pattern/lives/difficulty/drawing match server",
+      "all keyboard states match server",
+      "expected API status 200",
+      "active answer omitted",
+      "page pattern/lives/difficulty/drawing match server",
+      "all keyboard states match server",
+      "expected API status 200",
+      "active answer omitted",
+      "page pattern/lives/difficulty/drawing match server",
+      "all keyboard states match server",
+      "expected API status 200",
+      "active answer omitted",
+      "page pattern/lives/difficulty/drawing match server",
+      "all keyboard states match server",
+      "expected API status 200",
+      "active answer omitted",
+      "page pattern/lives/difficulty/drawing match server",
+      "all keyboard states match server",
+      "complete game through browser",
+      "terminal answer displayed",
+      "terminal keyboard disabled",
+      "expected API status 201",
+      "active answer omitted",
+      "page pattern/lives/difficulty/drawing match server",
+      "all keyboard states match server",
+      "fresh game resets state",
+      "new game without reload",
+      "expected API status 200",
+      "active answer omitted",
+      "page pattern/lives/difficulty/drawing match server",
+      "all keyboard states match server",
+      "expected API status 201",
+      "active answer omitted",
+      "page pattern/lives/difficulty/drawing match server",
+      "all keyboard states match server",
+      "fresh game resets state",
+      "expected API status 200",
+      "active answer omitted",
+      "page pattern/lives/difficulty/drawing match server",
+      "all keyboard states match server",
+      "375px layout without horizontal overflow",
+      "mobile letter target at least 40px",
+      "320px layout without horizontal overflow",
+      "no browser runtime errors"
+    ],
+    "terminal": {
+      "status": "lost",
+      "word": "green"
+    },
+    "runtimeErrors": [],
+    "result": "passed"
+  },
+  "accessibility": {
+    "passed": 4,
+    "checks": [
+      "Initial accessible text",
+      "Fresh game accessible blanks",
+      "Accessible pattern after guess",
+      "Accessible pattern after real Sync"
+    ],
+    "url": "https://jnuso-hangman-game.onrender.com/",
+    "pattern": "_ _ _ _ _",
+    "result": "passed"
+  },
+  "all_controls": {
+    "passed": 70,
+    "checks": [
+      "Inventory covers all 30 interactive elements and all 3 difficulty options",
+      "easy: difficulty and New game reset active play correctly",
+      "medium: difficulty and New game reset active play correctly",
+      "hard: difficulty and New game reset active play correctly",
+      "Letter button A clicks and matches public API/GET/UI",
+      "Letter button B clicks and matches public API/GET/UI",
+      "Letter button C clicks and matches public API/GET/UI",
+      "Letter button D clicks and matches public API/GET/UI",
+      "Letter button E clicks and matches public API/GET/UI",
+      "Letter button F clicks and matches public API/GET/UI",
+      "Letter button G clicks and matches public API/GET/UI",
+      "Letter button H clicks and matches public API/GET/UI",
+      "Letter button I clicks and matches public API/GET/UI",
+      "Letter button J clicks and matches public API/GET/UI",
+      "Letter button K clicks and matches public API/GET/UI",
+      "Letter button L clicks and matches public API/GET/UI",
+      "Letter button M clicks and matches public API/GET/UI",
+      "Letter button N clicks and matches public API/GET/UI",
+      "Letter button O clicks and matches public API/GET/UI",
+      "Letter button P clicks and matches public API/GET/UI",
+      "Letter button Q clicks and matches public API/GET/UI",
+      "Letter button R clicks and matches public API/GET/UI",
+      "Letter button S clicks and matches public API/GET/UI",
+      "Letter button T clicks and matches public API/GET/UI",
+      "Letter button U clicks and matches public API/GET/UI",
+      "Letter button V clicks and matches public API/GET/UI",
+      "Letter button W clicks and matches public API/GET/UI",
+      "Letter button X clicks and matches public API/GET/UI",
+      "Letter button Y clicks and matches public API/GET/UI",
+      "Letter button Z clicks and matches public API/GET/UI",
+      "Physical key a submits exactly the normalized public API guess",
+      "Physical key B submits exactly the normalized public API guess",
+      "Physical key c submits exactly the normalized public API guess",
+      "Physical key D submits exactly the normalized public API guess",
+      "Physical key e submits exactly the normalized public API guess",
+      "Physical key F submits exactly the normalized public API guess",
+      "Physical key g submits exactly the normalized public API guess",
+      "Physical key H submits exactly the normalized public API guess",
+      "Physical key i submits exactly the normalized public API guess",
+      "Physical key J submits exactly the normalized public API guess",
+      "Physical key k submits exactly the normalized public API guess",
+      "Physical key L submits exactly the normalized public API guess",
+      "Physical key m submits exactly the normalized public API guess",
+      "Physical key N submits exactly the normalized public API guess",
+      "Physical key o submits exactly the normalized public API guess",
+      "Physical key P submits exactly the normalized public API guess",
+      "Physical key q submits exactly the normalized public API guess",
+      "Physical key R submits exactly the normalized public API guess",
+      "Physical key s submits exactly the normalized public API guess",
+      "Physical key T submits exactly the normalized public API guess",
+      "Physical key u submits exactly the normalized public API guess",
+      "Physical key V submits exactly the normalized public API guess",
+      "Physical key w submits exactly the normalized public API guess",
+      "Physical key X submits exactly the normalized public API guess",
+      "Physical key y submits exactly the normalized public API guess",
+      "Physical key Z submits exactly the normalized public API guess",
+      "Tab order, focus outline, keyboard difficulty selection and Enter on New game",
+      "Space and Enter activate focused letter buttons",
+      "Space activates New game",
+      "Offline guess and failed Sync preserve state; Space retries Sync after reconnect",
+      "Lost accepted response and HTTP-error Sync recover via Enter without repeating guess",
+      "Home link reloads initial UI and leaves existing server game intact",
+      "Enter activates Home link",
+      "320px: all controls fit, letter hit targets usable, select/New game/letter click work",
+      "375px: all controls fit, letter hit targets usable, select/New game/letter click work",
+      "581px: all controls fit, letter hit targets usable, select/New game/letter click work",
+      "768px: all controls fit, letter hit targets usable, select/New game/letter click work",
+      "801px: all controls fit, letter hit targets usable, select/New game/letter click work",
+      "1280px: all controls fit, letter hit targets usable, select/New game/letter click work",
+      "No browser JavaScript runtime errors"
+    ],
+    "interactiveInventory": [
+      {
+        "tag": "A",
+        "id": "",
+        "letter": null,
+        "href": "/"
+      },
+      {
+        "tag": "SELECT",
+        "id": "difficulty",
+        "letter": null,
+        "href": null
+      },
+      {
+        "tag": "BUTTON",
+        "id": "sync-game",
+        "letter": null,
+        "href": null
+      },
+      {
+        "tag": "BUTTON",
+        "id": "new-game",
+        "letter": null,
+        "href": null
+      },
+      {
+        "tag": "BUTTON",
+        "id": "",
+        "letter": "a",
+        "href": null
+      },
+      {
+        "tag": "BUTTON",
+        "id": "",
+        "letter": "b",
+        "href": null
+      },
+      {
+        "tag": "BUTTON",
+        "id": "",
+        "letter": "c",
+        "href": null
+      },
+      {
+        "tag": "BUTTON",
+        "id": "",
+        "letter": "d",
+        "href": null
+      },
+      {
+        "tag": "BUTTON",
+        "id": "",
+        "letter": "e",
+        "href": null
+      },
+      {
+        "tag": "BUTTON",
+        "id": "",
+        "letter": "f",
+        "href": null
+      },
+      {
+        "tag": "BUTTON",
+        "id": "",
+        "letter": "g",
+        "href": null
+      },
+      {
+        "tag": "BUTTON",
+        "id": "",
+        "letter": "h",
+        "href": null
+      },
+      {
+        "tag": "BUTTON",
+        "id": "",
+        "letter": "i",
+        "href": null
+      },
+      {
+        "tag": "BUTTON",
+        "id": "",
+        "letter": "j",
+        "href": null
+      },
+      {
+        "tag": "BUTTON",
+        "id": "",
+        "letter": "k",
+        "href": null
+      },
+      {
+        "tag": "BUTTON",
+        "id": "",
+        "letter": "l",
+        "href": null
+      },
+      {
+        "tag": "BUTTON",
+        "id": "",
+        "letter": "m",
+        "href": null
+      },
+      {
+        "tag": "BUTTON",
+        "id": "",
+        "letter": "n",
+        "href": null
+      },
+      {
+        "tag": "BUTTON",
+        "id": "",
+        "letter": "o",
+        "href": null
+      },
+      {
+        "tag": "BUTTON",
+        "id": "",
+        "letter": "p",
+        "href": null
+      },
+      {
+        "tag": "BUTTON",
+        "id": "",
+        "letter": "q",
+        "href": null
+      },
+      {
+        "tag": "BUTTON",
+        "id": "",
+        "letter": "r",
+        "href": null
+      },
+      {
+        "tag": "BUTTON",
+        "id": "",
+        "letter": "s",
+        "href": null
+      },
+      {
+        "tag": "BUTTON",
+        "id": "",
+        "letter": "t",
+        "href": null
+      },
+      {
+        "tag": "BUTTON",
+        "id": "",
+        "letter": "u",
+        "href": null
+      },
+      {
+        "tag": "BUTTON",
+        "id": "",
+        "letter": "v",
+        "href": null
+      },
+      {
+        "tag": "BUTTON",
+        "id": "",
+        "letter": "w",
+        "href": null
+      },
+      {
+        "tag": "BUTTON",
+        "id": "",
+        "letter": "x",
+        "href": null
+      },
+      {
+        "tag": "BUTTON",
+        "id": "",
+        "letter": "y",
+        "href": null
+      },
+      {
+        "tag": "BUTTON",
+        "id": "",
+        "letter": "z",
+        "href": null
+      }
+    ],
+    "clickedLetters": [
+      "a",
+      "b",
+      "c",
+      "d",
+      "e",
+      "f",
+      "g",
+      "h",
+      "i",
+      "j",
+      "k",
+      "l",
+      "m",
+      "n",
+      "o",
+      "p",
+      "q",
+      "r",
+      "s",
+      "t",
+      "u",
+      "v",
+      "w",
+      "x",
+      "y",
+      "z"
+    ],
+    "physicalLetters": [
+      "a",
+      "B",
+      "c",
+      "D",
+      "e",
+      "F",
+      "g",
+      "H",
+      "i",
+      "J",
+      "k",
+      "L",
+      "m",
+      "N",
+      "o",
+      "P",
+      "q",
+      "R",
+      "s",
+      "T",
+      "u",
+      "V",
+      "w",
+      "X",
+      "y",
+      "Z"
+    ],
+    "statesCompared": 129,
+    "apiRequests": 133,
+    "storedGetChecks": 53,
+    "deploymentMetadata": {
+      "url": "https://jnuso-hangman-game.onrender.com/",
+      "hasAccessibleParagraph": true,
+      "visualWordAriaLabel": null,
+      "visualWordAriaHidden": "true",
+      "appScript": "/static/app.js"
+    },
+    "layoutMeasurements": [
+      {
+        "width": 320,
+        "minimumLetterWidth": 29.140625,
+        "minimumLetterHeight": 43
+      },
+      {
+        "width": 375,
+        "minimumLetterWidth": 37,
+        "minimumLetterHeight": 43
+      },
+      {
+        "width": 581,
+        "minimumLetterWidth": 27.953125,
+        "minimumLetterHeight": 39
+      },
+      {
+        "width": 768,
+        "minimumLetterWidth": 40.84375,
+        "minimumLetterHeight": 39
+      },
+      {
+        "width": 801,
+        "minimumLetterWidth": 34.59375,
+        "minimumLetterHeight": 39
+      },
+      {
+        "width": 1280,
+        "minimumLetterWidth": 58,
+        "minimumLetterHeight": 39
+      }
+    ],
+    "runtimeErrors": []
+  },
+  "frontend_assets": {
+    "deploy_commit": "7f9a5a3570010418ed9bf3ef9b5ce9a30edda285",
+    "comparison": "CRLF normalized to LF",
+    "assets": [
+      {
+        "path": "static/index.html",
+        "live_sha256": "128839705d4ef651540cd7ab9598c40a7b51aec7742ebae00dde3fd6aef7dc66",
+        "matches_current_checkout": true,
+        "matches_deployed_commit": true
+      },
+      {
+        "path": "static/app.js",
+        "live_sha256": "3e11e344ff944afcdd7177a6304e242d9e703911019d3c6ce5ff3f8aa2094a4b",
+        "matches_current_checkout": true,
+        "matches_deployed_commit": true
+      },
+      {
+        "path": "static/style.css",
+        "live_sha256": "0e20eaaad244c0c784a3414de6fa12fe6bdd91d166b33cccd3fb4869915722ea",
+        "matches_current_checkout": true,
+        "matches_deployed_commit": true
+      }
+    ],
+    "result": "passed"
+  },
+  "screenshots_reviewed": [
+    "deployed-desktop-playing.png",
+    "deployed-desktop-finished.png",
+    "deployed-mobile-playing.png"
+  ],
+  "limits": [
+    "Accessibility checks inspect Chromium's accessibility tree; native screen-reader speech was not manually verified.",
+    "Offline, aborted-response and 500 console failures were deliberately injected to verify recovery; no JavaScript runtime errors occurred.",
+    "HTTP/gameplay checks create disposable in-memory games on the public service; they do not verify game persistence across process restarts.",
+    "This record verifies runtime commit 7f9a5a3. A subsequent evidence-only commit does not change deployed application files."
+  ],
+  "result": "passed"
+}

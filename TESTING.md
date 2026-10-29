@@ -27,14 +27,37 @@ It also checks that unchanged patterns are not mutated, terminal answers remain
 accessible, and the visual row is ignored by accessibility.
 
 These checks verify Chromium's accessibility representation and DOM updates;
-NVDA/JAWS/VoiceOver speech output has not been manually verified. This is a
-local source verification, not a deployment of the fix. See the browser README
-for reproduction.
+NVDA/JAWS/VoiceOver speech output has not been manually verified. The October 27
+run verified local source only; the fix was deployed and checked publicly on
+October 29 as recorded below. See the browser README for reproduction.
 
 The suite uses standard-library `unittest`, known answers for engine scenarios,
 and temporary directories for file-loading scenarios. Tests use public behavior;
 they do not inspect the engine's private word or history. The selection test
 patches `random.choice` to inspect normalized candidates at that boundary.
+
+## Production release verification — 2026-10-29
+
+Render deployment `dep-dbhs2n8n74is73cig6sg` finished successfully at
+`2026-10-29T21:58:40.555487Z`, running GitHub commit
+`7f9a5a3570010418ed9bf3ef9b5ce9a30edda285`. All three served frontend assets
+match that commit, including the accessible mystery-word paragraph and the
+aria-hidden visual row.
+
+Native Python and Chrome checks against the HTTPS deployment passed **55 HTTP
+requests, 64 deployment browser assertions, and 4 live Chromium accessibility-tree
+scenarios**, including a real Sync after an accepted-but-lost guess response.
+Extended checks passed **70 control/recovery/layout checks and 129 UI/API state
+comparisons** across all 26 letter buttons, all 26 mixed-case physical keys, all
+30 interactive elements, and viewport widths of 320, 375, 581, 768, 801, and
+1280px. There were no JavaScript runtime errors; network-console failures came
+from deliberately injected offline, lost-response, and HTTP 500 cases.
+
+These checks used normal random words on the deployed service. They are separate
+from the controlled local fixture suites and do not verify screen-reader speech
+or future hosting availability. Results and reviewed screenshots are saved in
+`evidence/deployment/2026-10-29/`. Earlier Phase 6 results below remain the
+historical October 26 runs.
 
 ## Phase 6 — Production server verification
 

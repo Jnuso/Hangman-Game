@@ -20,9 +20,9 @@ accessibility fix and passed 55 HTTP requests, 64 deployment browser assertions,
 
 Play online: **[jnuso-hangman-game.onrender.com](https://jnuso-hangman-game.onrender.com)**.
 
-See [TODO.md](TODO.md) for the phased plan. Phase 7's repository and README audit
-is complete; the final report, demonstration recording, and submission checks
-remain pending.
+See [TODO.md](TODO.md) for the phased plan. The two-page report and 2 minute
+16 second demonstration were reviewed, and the user confirmed HuskyCT submission
+on October 29, 2026. The deployed application must remain accessible during grading.
 
 ## Requirements and scope
 

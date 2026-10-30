@@ -15,7 +15,8 @@ htmlcov/
 tmp/
 *.log
 .playwright-cli/
-output/playwright/
+# Local browser evidence, report drafts, and document exports
+output/
 
 # Editor and operating-system files
 .vscode/

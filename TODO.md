@@ -166,16 +166,22 @@ README and repository audit completed on 2026-10-26. All 27 checked required
 implementation/documentation paths are tracked. The assignment, specification,
 and two reference documents match their first committed copies. Documentation
 links and PowerShell syntax checks passed; the corrected core-only Docker
-command passed 35 tests. Report, recording, and final submission checks remain
-pending; Phase 7 is not complete.
+command passed 35 tests. On October 29, the final two-page report and 2 minute
+16 second recording were reviewed against the assignment requirements. The
+recording shows deployed gameplay, a loss, a new game, a win, and DevTools
+request/response evidence. The public application passed a final five-request
+smoke check. The submission package was verified, and the user confirmed
+submission through HuskyCT. Hosting availability during grading remains ongoing.
 
 - [x] Finish README: purpose, architecture, prerequisites, installation, startup, tests, API examples, deployment URL, and limitations.
 - [x] Confirm the repository includes original specification, updated TODO, engine/server, frontend, word lists, dependencies, deployment configuration, and tests.
-- [ ] Prepare a 1–2 page PDF report covering AI-assisted process, implementation, testing, deployment, an actual resolved challenge, and reflection.
-- [ ] Include two or three representative prompts from our own development interactions in the report.
-- [ ] Record an approximately 2–3 minute demonstration of the deployed page, game creation, guesses, a complete win/loss, and a new game.
-- [ ] Include at least one HTTP request and JSON response in Chrome Developer Tools in the demonstration.
-- [ ] Recheck the deployed application and keep it accessible during grading.
-- [ ] Confirm final GitHub and deployed URLs, report PDF, and recording are ready for HuskyCT submission.
+- [x] Prepare a 1–2 page PDF report covering AI-assisted process, implementation, testing, deployment, an actual resolved challenge, and reflection.
+- [x] Include two or three representative prompts from our own development interactions in the report.
+- [x] Record an approximately 2–3 minute demonstration of the deployed page, game creation, guesses, a complete win/loss, and a new game.
+- [x] Include at least one HTTP request and JSON response in Chrome Developer Tools in the demonstration.
+- [x] Recheck the deployed application before submission.
+- [ ] Keep the deployed application accessible throughout grading (ongoing).
+- [x] Confirm final GitHub and deployed URLs, report PDF, and recording are ready for HuskyCT submission.
+- [x] Submit through HuskyCT (confirmed by the user on October 29, 2026).
 
 Completion: all four submission deliverables are ready and describe the implementation and evidence accurately.
